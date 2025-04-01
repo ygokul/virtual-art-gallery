@@ -1,3 +1,4 @@
+-- Active: 1742092772736@@127.0.0.1@3306@virtualartgallery
 -- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
 -- Host: localhost    Database: virtualartgallery
