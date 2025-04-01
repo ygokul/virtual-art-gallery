@@ -18,6 +18,9 @@
 --
 -- Table structure for table `artist`
 --
+CREATE DATABASE virtualartgallery
+
+use virtualartgallery
 
 DROP TABLE IF EXISTS `artist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
