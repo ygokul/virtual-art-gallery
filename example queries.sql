@@ -25,16 +25,6 @@ CREATE TABLE Gallery (
     FOREIGN KEY (Curator) REFERENCES Artist(ArtistID)  
 );
 
-CREATE TABLE Gallery (
-    GalleryID INT  PRIMARY KEY,          
-    Name VARCHAR(100) ,                        
-    Description TEXT,                                   
-    Location VARCHAR(200),                             
-    Curator INT,                                        
-    OpeningHours VARCHAR(100),                         
-    FOREIGN KEY (Curator) REFERENCES Artist(ArtistID)  
-);
-
 
 INSERT INTO Artwork (Title, Description, CreationDate, Medium, ImageURL)
 VALUES
