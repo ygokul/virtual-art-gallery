@@ -61,3 +61,11 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-03-23 19:15:49
+
+CREATE TABLE favorites (
+    UserID INT,
+    ArtworkID INT,
+    PRIMARY KEY (UserID, ArtworkID),
+    FOREIGN KEY (UserID) REFERENCES users(UserID),
+    FOREIGN KEY (ArtworkID) REFERENCES artwork(ArtworkID)
+);
