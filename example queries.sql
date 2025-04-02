@@ -171,6 +171,8 @@ alter table artwork add column ArtistID int, add constraint ar_foreign foreign k
 
 insert into artwork(artistid) values(101),(102),(103),(102),(105),(104),(106),(107),(108),(109);
 
+alter table artwork drop constraint ak_foreign;
 
+alter table artwork drop column artistid;
 
 
