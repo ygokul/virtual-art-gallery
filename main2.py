@@ -247,7 +247,7 @@ class TicketBookingSystem:
                     customers = [Customer(input("Enter customer name: "), input("Enter email: "), input("Enter phone number: ")) for _ in range(num_tickets)]
                     self.repository.book_tickets(eventname, num_tickets, customers)
                 elif choice == 3:
-                    booking_id = int(input("Enter booking ID: "))
+                    booking_id = int(input("Enter booking ID:"))
                     self.repository.cancel_booking(booking_id)
                 elif choice == 4:
                     print("Available seats:", self.repository.getAvailableNoOfTickets())
