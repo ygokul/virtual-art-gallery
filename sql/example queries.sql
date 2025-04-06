@@ -1,6 +1,12 @@
 create table Artwork(ArtworkID int primary key AUTO_INCREMENT,Title varchar(100),Description varchar(250),CreationDate DATE,Medium text,ImageURL varchar(500));
 
-CREATE TABLE Artist(ArtistID int primary key,Name varchar(20),Biography varchar(200),BirthDate Date,Nationality varchar(20),Website varchar(100),ContactInformation varchar(500));
+CREATE TABLE Artist(ArtistID int primary key,
+Name varchar(20),
+Biography varchar(200),
+BirthDate Date,
+Nationality varchar(20),
+Website varchar(100),
+ContactInformation varchar(500));
 
 CREATE TABLE Users (
     UserID INT AUTO_INCREMENT PRIMARY KEY,         
