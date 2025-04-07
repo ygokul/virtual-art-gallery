@@ -1,4 +1,4 @@
-import mysql.connector
+import pymysql
 from tabulate import tabulate
 from exceptions import (
     ArtworkNotFoundException,
@@ -24,7 +24,7 @@ class VirtualArtGalleryDAO:
                 print(f"Artist ID: {row[3]}")
                 print(f"Year: {row[4]}")
                 print("-" * 30)  # Separator for better readability
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Database Error: {e}")
 
     def add_artwork(self, title, medium, artist_id, year):
@@ -33,7 +33,7 @@ class VirtualArtGalleryDAO:
             self.cursor.execute(query, (title, medium, artist_id, year))
             self.conn.commit()
             print("Artwork added successfully!")
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Adding Artwork: {e}")
     def update_artwork(self, artwork):
         try:
@@ -43,7 +43,7 @@ class VirtualArtGalleryDAO:
             if self.cursor.rowcount == 0:
                 raise ArtworkNotFoundException("Artwork ID not found.")
             print("Artwork updated successfully!")
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Updating Artwork: {e}")
 
     def remove_artwork(self, artwork_id):
@@ -54,7 +54,7 @@ class VirtualArtGalleryDAO:
             if self.cursor.rowcount == 0:
                 raise ArtworkNotFoundException("Artwork ID not found.")
             print("Artwork removed successfully!")
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Removing Artwork: {e}")
 
     def get_artwork_by_id(self, artwork_id):
@@ -71,7 +71,7 @@ class VirtualArtGalleryDAO:
             print(f"Medium: {artwork[2]}")
             print(f"Artist ID: {artwork[3]}")
             print(f"Year: {artwork[4]}")
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Fetching Artwork: {e}")
 
     def search_artworks(self, keyword):
@@ -90,7 +90,7 @@ class VirtualArtGalleryDAO:
                 print(f"Artist ID: {row[3]}")
                 print(f"Year: {row[4]}")
                 print("-" * 30)
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Searching Artworks: {e}")
 
     def add_artwork_to_favorite(self, user_id, artwork_id):
@@ -99,7 +99,7 @@ class VirtualArtGalleryDAO:
             self.cursor.execute(query, (user_id, artwork_id))
             self.conn.commit()
             print("Artwork added to favorites!")
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Adding to Favorites: {e}")
 
     def remove_artwork_from_favorite(self, user_id, artwork_id):
@@ -110,7 +110,7 @@ class VirtualArtGalleryDAO:
             if self.cursor.rowcount == 0:
                 raise FavoriteNotFoundException("Favorite not found.")
             print("Artwork removed from favorites!")
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Removing from Favorites: {e}")
 
     def get_user_favorite_artworks(self, user_id):
@@ -130,7 +130,7 @@ class VirtualArtGalleryDAO:
                 print(f"Artist ID: {row[3]}")
                 print(f"Year: {row[4]}")
                 print("-" * 30)
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Fetching Favorites: {e}")
     
     def add_artist(self, name, biography, birth_date, nationality, website, contact_info):
@@ -153,5 +153,5 @@ class VirtualArtGalleryDAO:
             print(f"Nationality: {nationality}")
             print(f"Website: {website}")
             print(f"Contact Information: {contact_info}")
-        except mysql.connector.Error as e:
+        except pymysql.Error as e:
             print(f"Error Adding Artist: {e}")
