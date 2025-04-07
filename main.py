@@ -7,13 +7,13 @@ from entity.userfavoriteartwork import UserFavoriteArtwork
 def main():
     conn = DBConnection.connect()
     dao = VirtualArtGalleryDAO(conn)
-
-    print("="*50)
-    print("🎨  WELCOME TO THE VIRTUAL ART GALLERY  🎨".center(50))
-    print("="*50)
-
-
+    
     while True:
+        
+        print("\t")
+        print("="*50)
+        print("🎨  WELCOME TO THE VIRTUAL ART GALLERY  🎨".center(50))
+        print("="*50)
         
         print("       a. Artwork Management")
         print("       b. Gallery Management")
@@ -35,7 +35,7 @@ def main():
                     print("8. Add Artwork to Favorites")
                     print("9. Remove Artwork from Favorites")
                     print("10. View User's Favorite Artworks")
-                    print("11. Exit")
+                    print("11. Back to main menu")
                     
                     choice = input("Enter your choice: ")
 
@@ -140,7 +140,7 @@ def main():
                     print("18.Get Artworks From Gallery")
                     print("19. Get Artworks From Gallery")
                     print("20. Top Exhibited Artworks")
-                    print("21. Exit")
+                    print("21. Back to main menu")
                     
                     choice=input("Enter Your Choice:")
 
