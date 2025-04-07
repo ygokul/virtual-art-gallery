@@ -1,4 +1,5 @@
 import pymysql
+from dao.interface import Interface
 from tabulate import tabulate
 from datetime import datetime
 from entity.artwork import Artwork
@@ -12,7 +13,7 @@ from exception.exceptions import (
     GalleryNotFoundException
 )
 
-class VirtualArtGalleryDAO:
+class VirtualArtGalleryDAO(Interface):
     def __init__(self, conn):
         self.conn = conn
         self.cursor = conn.cursor()
@@ -138,6 +139,7 @@ class VirtualArtGalleryDAO:
                 artwork_id=row[0],
                 title=row[1],
                 description=row[2],
+                creation_date=row[3],
                 medium=row[3],
                 image_url=row[4]
             )
@@ -161,8 +163,9 @@ class VirtualArtGalleryDAO:
 
     def search_artworks(self, keyword):
         try:
-            query = "SELECT * FROM artwork WHERE Title = %s"
-            self.cursor.execute(query, (f"{keyword}",))
+            query = "SELECT * FROM artwork WHERE Title LIKE %s"
+            self.cursor.execute(query, (f"%{keyword}%",))
+
             rows = self.cursor.fetchall()
 
             if not rows:
@@ -175,6 +178,7 @@ class VirtualArtGalleryDAO:
                     artwork_id=row[0],
                     title=row[1],
                     description=row[2],
+                    creation_date=None,
                     medium=row[3],
                     image_url=row[4]
                 )
@@ -520,43 +524,8 @@ class VirtualArtGalleryDAO:
         except pymysql.Error as e:
             print(f"❌ Error generating report: {e}")
 
-    def get_artworks_in_gallery(self, gallery_id):
-        try:
-            query = """
-                SELECT a.ArtworkID, a.Title, a.Description, a.CreationDate, a.Medium, a.ImageURL
-                FROM artwork a
-                JOIN artwork_gallery ag ON a.ArtworkID = ag.ArtworkID
-                WHERE ag.GalleryID = %s
-            """
-            self.cursor.execute(query, (gallery_id,))
-            rows = self.cursor.fetchall()
-
-            if not rows:
-                raise ArtworkNotFoundException(f"🎨 No artworks found in Gallery ID {gallery_id}.")
-
-            print(f"\n🖼️ Artworks in Gallery ID {gallery_id}:")
-            for row in rows:
-                artwork = Artwork()
-                artwork.set_artwork_id(row[0])
-                artwork.set_title(row[1])
-                artwork.set_description(row[2])
-                artwork.set_creation_date(row[3])
-                artwork.set_medium(row[4])
-                artwork.set_image_url(row[5])
-
-                print(f"Artwork ID: {artwork.get_artwork_id()}")
-                print(f"Title: {artwork.get_title()}")
-                print(f"Description: {artwork.get_description()}")
-                print(f"Created On: {artwork.get_creation_date()}")
-                print(f"Medium: {artwork.get_medium()}")
-                print(f"Image URL: {artwork.get_image_url()}")
-                print("-" * 30)
-
-        except ArtworkNotFoundException as e:
-            print(e)
-
-        except pymysql.Error as e:
-            print(f"❌ Error fetching artworks: {e}")
+  
+  
 
     def get_artworks_in_gallery(self, gallery_id):
         try:

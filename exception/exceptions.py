@@ -7,8 +7,14 @@ class ArtworkNotFoundException(ArtGalleryException):
 class ArtistNotFoundException(ArtGalleryException):
     pass
 
-class GalleryNotFoundException(ArtGalleryException):
+class GalleryNotAddedException(ArtGalleryException):
     pass
 
 class FavoriteNotFoundException(ArtGalleryException):
+    pass
+
+class UserNotFoundException(ArtGalleryException):
+    pass
+
+class GalleryNotFoundException(ArtGalleryException):
     pass
