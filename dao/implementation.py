@@ -10,7 +10,8 @@ from exception.exceptions import (
     FavoriteNotFoundException,
     UserNotFoundException,
     GalleryNotAddedException,
-    GalleryNotFoundException
+    GalleryNotFoundException,
+    ArtistNotFoundException
 )
 
 class VirtualArtGalleryDAO(Interface):
@@ -302,6 +303,15 @@ class VirtualArtGalleryDAO(Interface):
     
     def add_gallery(self, gallery: Gallery):
         try:
+            # Check if Curator (Artist) exists
+            check_query = "SELECT * FROM artist WHERE ArtistID = %s"
+            self.cursor.execute(check_query, (gallery.get_curator(),))
+            result = self.cursor.fetchone()
+
+            if not result:
+                raise ArtistNotFoundException(f"❌ Curator with ID {gallery.get_curator()} not found.")
+
+            # Insert gallery if curator exists
             query = """
                 INSERT INTO gallery (Name, Description, Location, Curator, OpeningHours)
                 VALUES (%s, %s, %s, %s, %s)
@@ -326,9 +336,12 @@ class VirtualArtGalleryDAO(Interface):
             print(f"⏰ Opening Hours  : {gallery.get_opening_hours()}")
             print("=" * 40 + "\n")
 
+        except ArtistNotFoundException as e:
+            print(e)
+
         except pymysql.Error as e:
             raise GalleryNotAddedException(f"❌ Error Adding Gallery: {e}")
-        
+
     
     def update_gallery(self, gallery: Gallery):
         try:
@@ -409,6 +422,7 @@ class VirtualArtGalleryDAO(Interface):
             print(f"🚫 {e}")
         except pymysql.Error as e:
             print(f"❌ Database Error: {e}")
+
 
     def view_all_galleries(self):
         try:
@@ -522,6 +536,9 @@ class VirtualArtGalleryDAO(Interface):
 
         except pymysql.Error as e:
             print(f"❌ Error generating report: {e}")
+
+  
+  
 
     def get_artworks_in_gallery(self, gallery_id):
         try:
