@@ -86,10 +86,9 @@ class VirtualArtGalleryDAO(Interface):
             self.conn.commit()
 
             if self.cursor.rowcount == 0:
-                print("Artwork ID not found.")
-                return
-            print()
-            print("\nArtwork updated successfully!")
+                raise ArtworkNotFoundException(f"🎨 Artwork with ID {artwork.get_artwork_id()} not found for update.")
+
+            print("\n✅ Artwork updated successfully!")
 
             # Display updated artwork
             self.cursor.execute("SELECT * FROM artwork WHERE ArtworkID = %s", (artwork.get_artwork_id(),))
@@ -97,17 +96,20 @@ class VirtualArtGalleryDAO(Interface):
 
             if updated_artwork:
                 artwork_id, title, description, creation_date, medium, image_url = updated_artwork
-                print("\n--- Updated Artwork ---")
-                print(f"Artwork ID    : {artwork_id}")
-                print(f"Title         : {title}")
-                print(f"Description   : {description}")
-                print(f"Creation Date : {creation_date}")
-                print(f"Medium        : {medium}")
-                print(f"Image URL     : {image_url}")
+                print("\n--- 🎨 Updated Artwork ---")
+                print(f"🆔 Artwork ID    : {artwork_id}")
+                print(f"🖌️  Title         : {title}")
+                print(f"📝 Description   : {description}")
+                print(f"📅 Creation Date : {creation_date}")
+                print(f"🎨 Medium        : {medium}")
+                print(f"🌐 Image URL     : {image_url}")
                 print("-" * 40)
 
+        except ArtworkNotFoundException as e:
+            print(f"❌ {e}")
+
         except pymysql.Error as e:
-            print(f"Error Updating Artwork: {e}")
+            print(f"❌ Error Updating Artwork: {e}")
 
     def remove_artwork(self, identifier):
         try:
@@ -116,15 +118,18 @@ class VirtualArtGalleryDAO(Interface):
             self.conn.commit()
 
             if self.cursor.rowcount == 0:
-                raise ArtworkNotFoundException("Artwork not found.")
+                raise ArtworkNotFoundException(f"🎨 Artwork with ID or Title '{identifier}' not found.")
+
             print()
             print("✅ Artwork removed successfully!")
             print("🚀 We're always evolving! Feel free to add your next masterpiece anytime.")
             print("🎭 Visit us again for more artistic inspiration!")
 
-        except pymysql.Error as e:
-            print(f"Error Removing Artwork: {e}")
+        except ArtworkNotFoundException as e:
+            print(f"❌ {e}")
 
+        except pymysql.Error as e:
+            print(f"❌ Error Removing Artwork: {e}")
 
     def get_artwork_by_id(self, artwork_id):
         try:
@@ -141,8 +146,8 @@ class VirtualArtGalleryDAO(Interface):
                 title=row[1],
                 description=row[2],
                 creation_date=row[3],
-                medium=row[3],
-                image_url=row[4]
+                medium=row[4],   # Fixed: was using creation_date (row[3]) again
+                image_url=row[5]
             )
 
             # Print details with separator
@@ -158,8 +163,14 @@ class VirtualArtGalleryDAO(Interface):
 
             return artwork
 
+        except ArtworkNotFoundException as e:
+            print(f"Error: {e}")
+            return None
+
         except pymysql.Error as e:
-            print(f"Error Fetching Artwork: {e}")
+            print(f"Database Error: {e}")
+            return None
+
 
 
     def search_artworks(self, keyword):
@@ -190,8 +201,12 @@ class VirtualArtGalleryDAO(Interface):
                 print(f"Image URL   : {artwork.get_image_url()}")
                 print("-" * 40)
 
+        except ArtworkNotFoundException as e:
+            print(f"⚠️  {e}")
+
         except pymysql.Error as e:
-            print(f"Error Searching Artworks: {e}")
+            print(f"❌ Database Error: {e}")
+
 
 
     def add_artwork_to_favorite(self, favorite: UserFavoriteArtwork):
