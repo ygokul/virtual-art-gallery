@@ -410,7 +410,6 @@ class VirtualArtGalleryDAO(Interface):
         except pymysql.Error as e:
             print(f"❌ Database Error: {e}")
 
-
     def view_all_galleries(self):
         try:
             query = "SELECT * FROM gallery"
@@ -523,9 +522,6 @@ class VirtualArtGalleryDAO(Interface):
 
         except pymysql.Error as e:
             print(f"❌ Error generating report: {e}")
-
-  
-  
 
     def get_artworks_in_gallery(self, gallery_id):
         try:

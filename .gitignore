@@ -1,4 +1,6 @@
 /vag
-/exception/__pycache__/
-/entity/__pycache__/
-__pycache__
+/exception/__pycache__
+/entity/__pycache__
+/dao/__pycache__
+/util/__pycache__
+/__pycache__
