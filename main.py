@@ -130,25 +130,25 @@ def main():
 
         elif main_choice == 'b':
              while True:
-                    print("11. view all Galleries")
-                    print("12. Create Gallery")
-                    print("13. Update Gallery")
-                    print("14. Search Gallery By Name")
-                    print("15. Search by ID ")
-                    print("16. Remove gallery")
-                    print("17. Gallery Artist Impact Report")
-                    print("18.Get Artworks From Gallery")
-                    print("19. Get Artworks From Gallery")
-                    print("20. Top Exhibited Artworks")
-                    print("21. Back to main menu")
+                    print("1. view all Galleries")
+                    print("2. Create Gallery")
+                    print("3. Update Gallery")
+                    print("4. Search Gallery By Name")
+                    print("5. Search by ID ")
+                    print("6. Remove gallery")
+                    print("7. Gallery Artist Impact Report")
+                    print("8.Get Artworks From Gallery")
+                    print("9. Get Artworks From Gallery")
+                    print("10. Top Exhibited Artworks")
+                    print("11. Back to main menu")
                     
                     choice=input("Enter Your Choice:")
 
-                    if choice == '11':
+                    if choice == '1':
                         print("\n📋 Viewing All Galleries...\n")
                         dao.view_all_galleries()
 
-                    elif choice == '12':
+                    elif choice == '2':
                         name = input("Enter Gallery Name: ")
                         description = input("Enter Description: ")
                         location = input("Enter Location: ")
@@ -171,7 +171,7 @@ def main():
                         dao.add_gallery(gallery)
 
 
-                    elif choice == '13':
+                    elif choice == '3':
                         print("\n🛠️  Update Gallery")
                         gallery_id = int(input("Enter Gallery ID to update: "))
                         name = input("Enter New Name: ")
@@ -185,26 +185,26 @@ def main():
                         dao.update_gallery(updated_gallery)
                     
 
-                    elif choice == '14':
+                    elif choice == '4':
                         keyword = input("Enter gallery name keyword to search: ").strip()
                         print()
                         dao.search_gallery_by_name(keyword)
 
-                    elif choice == '15':
+                    elif choice == '5':
                         gallery_id = input("Enter Gallery ID to search: ").strip()
                         print()
                         dao.search_gallery_by_id(gallery_id)
 
-                    elif choice == '16':
+                    elif choice == '6':
                         gallery_id = input("Enter Gallery ID to remove: ").strip()
                         print()
                         dao.remove_gallery(gallery_id)
 
-                    elif choice == '17':
+                    elif choice == '7':
                         print()
                         dao.gallery_artist_impact_report()
 
-                    elif choice == '18':
+                    elif choice == '8':
                         print("\n🎨 View Artworks in a Gallery")
                         gallery_id = int(input("Enter Gallery ID: "))
                         print()
@@ -212,14 +212,14 @@ def main():
 
 
                     
-                    elif choice == '19':
+                    elif choice == '9':
                         print("\n🏛 View Galleries Displaying an Artwork")
                         artwork_id = int(input("Enter Artwork ID: "))
                         print()
                         dao.get_galleries_for_artwork(artwork_id)
                     
 
-                    elif choice == '20':
+                    elif choice == '10':
                         print("\n📊 View Top Exhibited Artworks")
                         top_n = int(input("Enter how many top artworks you want to view: "))
                         print()
@@ -227,7 +227,7 @@ def main():
 
 
 
-                    elif choice == '21':
+                    elif choice == '11':
                         break
 
                     else:
