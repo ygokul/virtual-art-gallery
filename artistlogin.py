@@ -17,6 +17,7 @@ def artwork_management_system(dao):
         print("2. View Artists")
         print("3. Search Artworks")
         print("4. Add Artwork to Favorites")
+        print("4. Add Artwork to Favorites")
         print("5. View User's Favorite Artworks")
         print("6. View Your Artwork with ID")
         print("7. Back to main menu")
