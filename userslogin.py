@@ -221,7 +221,7 @@ def mainlogin():
         if user id found in database:
             enter password 
             if password match:
-                show options
+                show options.
             else:
                 print("Invalid password, please try again.")
         else:
