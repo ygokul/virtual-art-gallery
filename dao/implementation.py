@@ -29,9 +29,72 @@ class VirtualArtGalleryDAO(Interface):
             for row in rows:
                 print(f"Artwork ID: {row[0]}")
                 print(f"Title: {row[1]}")
-                print(f"Medium: {row[2]}")
-                print(f"Artist ID: {row[3]}")
-                print(f"Year: {row[4]}")
+                print(f"Description: {row[2]}")
+                print(f"creation date: {row[3]}")
+                print(f"Medium: {row[4]}")
+                print(f"image Url: {row[5]}")
+                print("-" * 30)  # Separator for better readability
+        except pymysql.Error as e:
+            print(f"Database Error: {e}")
+    def view_artworks2(self):
+        try:
+            self.cursor.execute("SELECT * FROM artwork")
+            rows = self.cursor.fetchall()
+            if not rows:
+                raise ArtworkNotFoundException("No artworks found.")
+            print()
+            print("\nArtworks:")
+            for row in rows:
+                print(f"Artwork ID: {row[0]}")
+                print(f"Title: {row[1]}")
+                print("-" * 30)  # Separator for better readability
+        except pymysql.Error as e:
+            print(f"Database Error: {e}")
+    
+    def view_artists(self):
+        try:
+            self.cursor.execute("SELECT * FROM artist")
+            rows = self.cursor.fetchall()
+            if not rows:
+                raise ArtistNotFoundException("No artists found.")
+            print()
+            print("\nArtists:")
+            for row in rows:
+                print(f"Artist ID: {row[0]}")
+                print(f"Name: {row[1]}")
+                print(f"Biography: {row[2]}")
+                print(f"Birth date: {row[3]}")
+                print(f"Nationality: {row[4]}")
+                print(f"Website: {row[5]}")
+                print(f"contactinformation: {row[6]}")
+                print("-" * 30)  # Separator for better readability
+        except pymysql.Error as e:
+            print(f"Database Error: {e}")
+    def view_artists2(self):
+        try:
+            self.cursor.execute("SELECT * FROM artist")
+            rows = self.cursor.fetchall()
+            if not rows:
+                raise ArtistNotFoundException("No artists found.")
+            print()
+            print("\nArtists:")
+            for row in rows:
+                print(f"Artist ID: {row[0]}")
+                print(f"Name: {row[1]}")
+                print("-" * 30)  # Separator for better readability
+        except pymysql.Error as e:
+            print(f"Database Error: {e}")
+    def view_users2(self):
+        try:
+            self.cursor.execute("SELECT * FROM users")
+            rows = self.cursor.fetchall()
+            if not rows:
+                raise ArtistNotFoundException("No artists found.")
+            print()
+            print("\nUsers:")
+            for row in rows:
+                print(f"User ID: {row[0]}")
+                print(f"Name: {row[1]}")
                 print("-" * 30)  # Separator for better readability
         except pymysql.Error as e:
             print(f"Database Error: {e}")
@@ -314,6 +377,24 @@ class VirtualArtGalleryDAO(Interface):
             print(f"Contact Information: {contact_info}")
         except pymysql.Error as e:
             print(f"Error Adding Artist: {e}")
+            
+    def add_users(self, Username, Password, Email, FirstName, LastName, DateOfBirth,ProfilePicture):
+        try:
+            query = """
+                INSERT INTO users (Username, Password, Email, FirstName, LastName, DateOfBirth,ProfilePicture)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            self.cursor.execute(query, (Username, Password, Email, FirstName, LastName, DateOfBirth,ProfilePicture))
+            self.conn.commit()
+
+            # Fetch the auto-generated UserID
+            user_id = self.cursor.lastrowid
+
+            print("\nUser added successfully!")
+            print(f"User ID: {user_id}")
+            print(f"Name: {Username}")
+        except pymysql.Error as e:
+            print(f"Error Adding User: {e}")
 
     
     def add_gallery(self, gallery: Gallery):
@@ -467,6 +548,36 @@ class VirtualArtGalleryDAO(Interface):
                 print(f"📍 Location       : {gallery.get_location()}")
                 print(f"👤 Curator ID     : {gallery.get_curator()}")
                 print(f"🕒 Opening Hours  : {gallery.get_opening_hours()}")
+                print("-" * 60)
+
+        except GalleryNotFoundException as e:
+            print(f"🚫 {e}")
+        except pymysql.Error as e:
+            print(f"❌ Database Error: {e}")
+    def view_all_galleries2(self):
+        try:
+            query = "SELECT * FROM gallery"
+            self.cursor.execute(query)
+            results = self.cursor.fetchall()
+
+            if not results:
+                raise GalleryNotFoundException("No galleries found in the database.")
+
+            print("\n🖼️ All Galleries:")
+            print("=" * 60)
+
+            for result in results:
+                gallery = Gallery(
+                    result[0],  # GalleryID
+                    result[1],  # Name
+                    result[2],  # Description
+                    result[3],  # Location
+                    result[4],  # Curator
+                    result[5]   # OpeningHours
+                )
+
+                print(f"🏛️ Gallery ID     : {gallery.get_gallery_id()}")
+                print(f"📛 Name           : {gallery.get_name()}")
                 print("-" * 60)
 
         except GalleryNotFoundException as e:
