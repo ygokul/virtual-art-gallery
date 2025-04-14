@@ -8,12 +8,11 @@ from entity.userfavoriteartwork import UserFavoriteArtwork
 
 def artwork_management_system(dao):
     while True:
-        print()
         print("\n=================================================")
         print("---------------Virtual Art Gallery---------------")
         print(":::::::::::::  Logged in as artist  :::::::::::::")
-        print("             Artwork Management System           ")
-        print()
+        print("            Artwork Management System           ")
+        print("=================================================")
         print("1. View Artworks")
         print("2. View Artists")
         print("3. Search Artworks")
@@ -45,13 +44,8 @@ def artwork_management_system(dao):
         elif choice == '5':
             dao.view_users2()
             user_id = int(input("Enter User ID to view favorite artworks: "))
-            
-            # Create an instance of UserFavoriteArtwork
             user_fav_artwork = UserFavoriteArtwork(user_id=user_id)
-            
-            # Pass the object to the DAO method
             dao.get_user_favorite_artworks(user_fav_artwork)
-
         elif choice == '6':
             dao.view_artworks2()
             artwork_id = int(input("Enter Artwork ID to view: "))
@@ -60,13 +54,15 @@ def artwork_management_system(dao):
             break
         else:
             print("Invalid choice, please try again.")
+
+
 def artwork_management_system_admin(dao):
     while True:
-        print()
         print("\n=================================================")
         print("---------------Virtual Art Gallery---------------")
         print(":::::::::::::  Logged in as Admin  :::::::::::::")
         print("            Artwork Management System            ")
+        print("=================================================")
         print("1. Add Artwork")
         print("2. Remove Artwork")
         print("3. Update Artwork")
@@ -82,14 +78,12 @@ def artwork_management_system_admin(dao):
             image_url = input("Image URL: ")
             artwork = Artwork(None, title, description, None, medium, image_url)
             dao.add_artwork(artwork)
-
         elif choice == '2':
             dao.view_artworks2()
             identifier = input("Enter Artwork ID or Title to remove: ")
             if identifier.isdigit():
                 identifier = int(identifier)
             dao.remove_artwork(identifier)
-            
         elif choice == '3':
             print("\n✏️ Update Artwork")
             artwork_id = int(input("Enter Artwork ID to update: "))
@@ -101,22 +95,18 @@ def artwork_management_system_admin(dao):
                 artwork_id=artwork_id,
                 title=title,
                 description=description,
-                creation_date=None,  # or pass a dummy value since it's auto-updated
+                creation_date=None,
                 medium=medium,
                 image_url=image_url
             )
             dao.update_artwork(artwork)
-            
         elif choice == '4':
             dao.view_artworks2()
             artwork_id = int(input("Enter Artwork ID to remove from favorites: "))
-            print()  # One-line gap
-
+            print()
             favorite = UserFavoriteArtwork()
             favorite.set_artwork_id(artwork_id)
-
             dao.remove_artwork_from_favorite(favorite)
-
         elif choice == '5':
             break
         else:
@@ -125,10 +115,14 @@ def artwork_management_system_admin(dao):
 
 def gallery_management_system(dao):
     while True:
-        print("\nGallery Management System")
-        print("1. display all Galleries")
+        print("\n=================================================")
+        print("---------------Virtual Art Gallery---------------")
+        print(":::::::::::::  Logged in as artist  :::::::::::::")
+        print("            Gallery Management System            ")
+        print("=================================================")
+        print("1. Display all Galleries")
         print("2. Search Gallery by Name")
-        print("3. view Gallery by ID")
+        print("3. View Gallery by ID")
         print("4. Gallery Artist Impact Report")
         print("5. View Artworks in a specific Gallery")
         print("6. View Galleries Displaying the Artwork")
@@ -164,26 +158,24 @@ def gallery_management_system(dao):
             break
         else:
             print("Invalid choice, please try again.")
+
+
 def gallery_management_system_admin(dao):
     while True:
         print("\n=================================================")
         print("---------------Virtual Art Gallery---------------")
-        print("               Logged in as Admin               ")
+        print(":::::::::::::  Logged in as Admin  :::::::::::::")
         print("            Gallery Management System            ")
-        print("1. Create Gallery")#
-        print("2. Update Gallery")#
-        print("3. Remove Gallery")#
+        print("=================================================")
+        print("1. Create Gallery")
+        print("2. Update Gallery")
+        print("3. Remove Gallery")
         print("4. Back to main menu")
 
         choice = input("Enter your choice: ")
 
         if choice == '1':
-            print("\n=================================================")
-            print("---------------Virtual Art Gallery---------------")
-            print(":::::::::::::  Logged in as Admin  :::::::::::::")
-            print("            Gallery Management System            ")
-            print("\n=================================================")
-            print("                 Create Gallery       ")
+            print("                 Create Gallery                   ")
             name = input("Enter Gallery Name: ")
             description = input("Enter Description: ")
             location = input("Enter Location: ")
@@ -195,12 +187,7 @@ def gallery_management_system_admin(dao):
             gallery = Gallery(None, name, description, location, curator, opening_hours)
             dao.add_gallery(gallery)
         elif choice == '2':
-            print("\n=================================================")
-            print("---------------Virtual Art Gallery---------------")
-            print("               Logged in as Admin               ")
-            print("            Gallery Management System            ")
-            print("=================================================")
-            print("                 update Gallery                    ")
+            print("                 Update Gallery                   ")
             dao.view_all_galleries2()
             gallery_id = int(input("Enter Gallery ID to update: "))
             name = input("Enter New Name: ")
@@ -212,6 +199,7 @@ def gallery_management_system_admin(dao):
             updated_gallery = Gallery(gallery_id, name, description, location, curator, opening_hours)
             dao.update_gallery(updated_gallery)
         elif choice == '3':
+            print("                 remove Gallery                   ")
             gallery_id = input("Enter Gallery ID to remove: ")
             dao.remove_gallery(gallery_id)
         elif choice == '4':
@@ -225,108 +213,35 @@ def mainlogin():
     dao = VirtualArtGalleryDAO(conn)
 
     while True:
-        print()
         print("\n=================================================")
         print("---------------Virtual Art Gallery---------------")
-        print("Welcome to the landing page")
-        print("1. Login")
-        print("2. Register")
-        print("3. Exit")
-
-        choice = input("Please choose an option: ")
-        while True:
-            if choice == "1":
-                print()
-                print("\n=================================================")
-                print("---------------Virtual Art Gallery---------------")
-                print("Moving to login page")
-                print("1. Login as artist")
-                print("2. Login as admin")
-                print("3. Exit")
-                user_type = input("Enter 1 for artist or 2 for admin: ")
-                while True:
-                    while True:
-                        if user_type == "1":
-                            print()
-                            print("\n=================================================")
-                            print("---------------Virtual Art Gallery---------------")
-                            print(":::::::::::::  Logged in as artist  :::::::::::::")
-                            print("Choose the system to work")
-                            print("1. Artwork Management System")
-                            print("2. Gallery Management System")
-                            print("3. Exit")
-                            system_choice = input("Enter 1 for artwork or 2 for gallery: ")
-                            while True:
-                                if system_choice == "1":
-                                    artwork_management_system(dao)
-                                elif system_choice == "2":
-                                    gallery_management_system(dao)
-                                elif system_choice == "3":
-                                    break
-                                else:
-                                    print("Invalid choice, returning to login page.")
-                        elif user_type == "2":
-                            print("\n=================================================")
-                            print("---------------Virtual Art Gallery---------------")
-                            print(":::::::::::::  Logged in as Admin  ::::::::::::::")
-                            print("Choose the system to work")
-                            print("1. Artwork Management System")
-                            print("2. Gallery Management System")
-                            system_choice = input("Enter 1 for artwork or 2 for gallery: ")
-
-                            if system_choice == "1":
-                                artwork_management_system_admin(dao)
-                                break
-                            elif system_choice == "2":
-                                gallery_management_system_admin(dao)
-                            else:
-                                print("Invalid choice, returning to login page.")
-                        elif user_type == "3":
-                            break
-                        else:
-                            print("Invalid user type, returning to login page.")
-                    break
-                break
-            elif choice == "2":
-                print("Moving to register page")
-                print("1. Create Account for artist")
-                print("2. Create Account for user")
-                if input("Enter 1 for artist or 2 for user: ") == "1":
-                    print("Creating account for artist")
-                    name = input("Name: ")
-                    biography = input("Biography: ")
-                    birth_date = input("Birth Date (YYYY-MM-DD): ")
-                    nationality = input("Nationality: ")
-                    website = input("Website: ")
-                    contact_info = input("Contact Information: ")
-
-                    # Create an Artist object with the provided details
-                    artist = Artist(None, name, biography, birth_date, nationality, website, contact_info)
-
-                    # Call the DAO method to add the artist
-                    dao.add_artist(artist)
-                    print("Artist account created successfully!")
-
-                else:
-                    print("Creating account for user")
-                    Username = input("Name: ")
-                    Password = input("enter password: ")
-                    Email = input("enter your email: ")
-                    FirstName = input("firstname: ")
-                    LastName = input("Lastname: ")
-                    DateOfBirth = input("Birth Date (YYYY-MM-DD): ")
-                    ProfilePicture = input("link for profile picture: ")
-
-                    dao.add_users(Username, Password, Email, FirstName, LastName, DateOfBirth, ProfilePicture)
-                    print("User account created successfully!")
-            elif choice == "3":
-                print("Exiting the login page. Goodbye!")
-                break
+        print("\n=================================================")
+        print("welcome to  users dashboard")
+        user_id = int(input("Enter your user ID: "))
+        if user id found in database:
+            enter password 
+            if password match:
+                show options
             else:
-                print("Invalid choice, please try again.")
-        break
+                print("Invalid password, please try again.")
+        else:
+            print("\nCreating account for user")
+            Username = input("Name: ")
+            Password = input("Enter password: ")
+            Email = input("Enter your email: ")
+            FirstName = input("Firstname: ")
+            LastName = input("Lastname: ")
+            DateOfBirth = input("Birth Date (YYYY-MM-DD): ")
+            ProfilePicture = input("Link for profile picture: ")
+            dao.add_users(Username, Password, Email, FirstName, LastName, DateOfBirth, ProfilePicture)
+            print("User account created successfully!")
+            
 
-    conn.close()
+            
+
+    
+
+        conn.close()
 
 
 if __name__ == "__main__":
