@@ -4,6 +4,7 @@ from tabulate import tabulate
 from datetime import datetime
 from entity.artwork import Artwork
 from entity.gallery import Gallery
+from entity.user import User
 from entity.userfavoriteartwork import UserFavoriteArtwork
 from exception.exceptions import (
     ArtworkNotFoundException,
@@ -422,6 +423,25 @@ class VirtualArtGalleryDAO(Interface):
             print(f"Name: {Username}")
         except pymysql.Error as e:
             print(f"Error Adding User: {e}")
+
+
+    def get_user_by_id(self, user_id):
+        self.cursor.execute("SELECT * FROM users WHERE UserID = %s", (user_id,))
+        result = self.cursor.fetchone()
+        if result:
+            return User(
+                result[0],  # UserID
+                result[1],  # Username
+                result[2],  # Password
+                result[3],  # Email
+                result[4],  # FirstName
+                result[5],  # LastName
+                result[6],  # DateOfBirth
+                result[7],  # ProfilePicture
+                result[8] if len(result) > 8 else None  # FavoriteArtwork (optional)
+            )
+        return None
+
 
     
     def add_gallery(self, gallery: Gallery):

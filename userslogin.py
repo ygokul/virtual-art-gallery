@@ -3,6 +3,7 @@ from dao.implementation import VirtualArtGalleryDAO
 from entity.artwork import Artwork
 from entity.gallery import Gallery
 from entity.artist import Artist
+from entity.user import User
 from entity.userfavoriteartwork import UserFavoriteArtwork
 
 
@@ -217,32 +218,42 @@ def mainlogin():
         print("---------------Virtual Art Gallery---------------")
         print("\n=================================================")
         print("welcome to  users dashboard")
-        user_id = int(input("Enter your user ID: "))
-        if user id found in database:
-            enter password 
-            if password match:
-                show options.
+        try:
+            user_id = int(input("Enter UserID: "))
+        except ValueError:
+            print("Invalid UserID. Please enter a number.")
+            continue
+
+        user = dao.get_user_by_id(user_id)
+
+        if user:
+            print("User exists.")
+            password = input("Enter your password: ")
+
+            if password == user.get_password():
+                print(f"Welcome back, {user.get_first_name()}!")
             else:
-                print("Invalid password, please try again.")
+                print("Incorrect password.")
         else:
-            print("\nCreating account for user")
-            Username = input("Name: ")
-            Password = input("Enter password: ")
-            Email = input("Enter your email: ")
-            FirstName = input("Firstname: ")
-            LastName = input("Lastname: ")
-            DateOfBirth = input("Birth Date (YYYY-MM-DD): ")
-            ProfilePicture = input("Link for profile picture: ")
-            dao.add_users(Username, Password, Email, FirstName, LastName, DateOfBirth, ProfilePicture)
-            print("User account created successfully!")
-            
+            print("User not found.")
+            create = input("Would you like to create a new account? (yes/no): ").strip().lower()
+            if create == 'yes':
+                print("\nCreating account for user")
+                Username = input("Username: ")
+                Password = input("Enter password: ")
+                Email = input("Enter your email: ")
+                FirstName = input("Firstname: ")
+                LastName = input("Lastname: ")
+                DateOfBirth = input("Birth Date (YYYY-MM-DD): ")
+                ProfilePicture = input("Link for profile picture: ")
 
-            
+                dao.add_users(Username, Password, Email, FirstName, LastName, DateOfBirth, ProfilePicture)
+                print("User account created successfully!")
 
-    
+       
 
+    # Make sure to close connection outside the loop
         conn.close()
-
 
 if __name__ == "__main__":
     mainlogin()
