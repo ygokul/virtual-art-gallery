@@ -100,33 +100,49 @@ class VirtualArtGalleryDAO(Interface):
             print(f"Database Error: {e}")
 
 
-    def add_artwork(self, title, description, medium, image_url):
+    def add_artwork(self, artwork: Artwork):
         try:
-            creation_date = datetime.now().strftime('%Y-%m-%d')  # current date in YYYY-MM-DD format
+            creation_date = datetime.now().strftime('%Y-%m-%d')
+            artwork.set_creation_date(creation_date)
+
             query = """
                 INSERT INTO artwork (Title, Description, CreationDate, Medium, ImageURL)
                 VALUES (%s, %s, %s, %s, %s)
             """
-            self.cursor.execute(query, (title, description, creation_date, medium, image_url))
+            self.cursor.execute(query, (
+                artwork.get_title(),
+                artwork.get_description(),
+                artwork.get_creation_date(),
+                artwork.get_medium(),
+                artwork.get_image_url()
+            ))
             self.conn.commit()
-            print()
-            print("/n Artwork added successfully!")
+
+            print("\n✅ Artwork added successfully!")
 
             self.cursor.execute("SELECT * FROM artwork WHERE ArtworkID = LAST_INSERT_ID()")
             inserted_artwork = self.cursor.fetchone()
 
             if inserted_artwork:
-                artwork_id, title, description, creation_date, medium, image_url = inserted_artwork
-                print("\n--- Inserted Artwork ---")
-                print(f"Artwork ID    : {artwork_id}")
-                print(f"Title         : {title}")
-                print(f"Description   : {description}")
-                print(f"Creation Date : {creation_date}")
-                print(f"Medium        : {medium}")
-                print(f"Image URL     : {image_url}")
+                artwork.set_artwork_id(inserted_artwork[0])
+                artwork.set_title(inserted_artwork[1])
+                artwork.set_description(inserted_artwork[2])
+                artwork.set_creation_date(inserted_artwork[3])
+                artwork.set_medium(inserted_artwork[4])
+                artwork.set_image_url(inserted_artwork[5])
+
+                print("\n🎨 Inserted Artwork:")
                 print("-" * 40)
+                print(f"Artwork ID    : {artwork.get_artwork_id()}")
+                print(f"Title         : {artwork.get_title()}")
+                print(f"Description   : {artwork.get_description()}")
+                print(f"Creation Date : {artwork.get_creation_date()}")
+                print(f"Medium        : {artwork.get_medium()}")
+                print(f"Image URL     : {artwork.get_image_url()}")
+                print("-" * 40)
+
         except pymysql.Error as e:
-            print(f"Error Adding Artwork: {e}")
+            print(f"❌ Error Adding Artwork: {e}")
 
 
     def update_artwork(self, artwork):
@@ -325,7 +341,7 @@ class VirtualArtGalleryDAO(Interface):
         except pymysql.Error as e:
             print(f"❌ Error Removing from Favorites: {e}")
 
-    def get_user_favorite_artworks(self, user_id):
+    def get_user_favorite_artworks(self, user_fav_artwork):
         try:
             query = """
                 SELECT a.ArtworkID, a.Title, a.Description, a.CreationDate, a.Medium, a.ImageURL
@@ -333,7 +349,7 @@ class VirtualArtGalleryDAO(Interface):
                 JOIN user_favorite_artwork ufa ON a.ArtworkID = ufa.ArtworkID
                 WHERE ufa.UserID = %s
             """
-            self.cursor.execute(query, (user_id,))
+            self.cursor.execute(query, (user_fav_artwork.get_user_id(),))
             rows = self.cursor.fetchall()
 
             if not rows:
@@ -341,12 +357,12 @@ class VirtualArtGalleryDAO(Interface):
 
             print("\n🎨 User's Favorite Artworks:")
             for row in rows:
-                print(f"🆔 Artwork ID: {row[0]}")
-                print(f"🖌️ Title: {row[1]}")
-                print(f"📝 Description: {row[2]}")
-                print(f"📅 Created On: {row[3]}")
-                print(f"🎨 Medium: {row[4]}")
-                print(f"🖼️ Image URL: {row[5]}")
+                print(f"🆔 Artwork ID    : {row[0]}")
+                print(f"🖌️  Title         : {row[1]}")
+                print(f"📝 Description   : {row[2]}")
+                print(f"📅 Created On    : {row[3]}")
+                print(f"🎨 Medium        : {row[4]}")
+                print(f"🖼️  Image URL     : {row[5]}")
                 print("-" * 40)
 
         except FavoriteNotFoundException as e:
@@ -355,28 +371,39 @@ class VirtualArtGalleryDAO(Interface):
         except pymysql.Error as e:
             print(f"❌ Error Fetching Favorites: {e}")
 
-    def add_artist(self, name, biography, birth_date, nationality, website, contact_info):
+
+    def add_artist(self, artist):
         try:
             query = """
-                INSERT INTO Artist (Name, Biography, BirthDate, Nationality, Website, ContactInformation)
+                INSERT INTO artist (Name, Biography, BirthDate, Nationality, Website, ContactInformation)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """
-            self.cursor.execute(query, (name, biography, birth_date, nationality, website, contact_info))
+            self.cursor.execute(query, (
+                artist.get_name(),
+                artist.get_biography(),
+                artist.get_birth_date(),
+                artist.get_nationality(),
+                artist.get_website(),
+                artist.get_contact_info()
+            ))
             self.conn.commit()
 
             # Fetch the auto-generated ArtistID
             artist_id = self.cursor.lastrowid
+            artist.set_artist_id(artist_id)
 
-            print("\nArtist added successfully!")
-            print(f"Artist ID: {artist_id}")
-            print(f"Name: {name}")
-            print(f"Biography: {biography}")
-            print(f"Birth Date: {birth_date}")
-            print(f"Nationality: {nationality}")
-            print(f"Website: {website}")
-            print(f"Contact Information: {contact_info}")
+            print("\n✅ Artist added successfully!")
+            print(f"🎨 Artist ID         : {artist.get_artist_id()}")
+            print(f"👤 Name              : {artist.get_name()}")
+            print(f"📖 Biography         : {artist.get_biography()}")
+            print(f"🎂 Birth Date        : {artist.get_birth_date()}")
+            print(f"🌍 Nationality       : {artist.get_nationality()}")
+            print(f"🔗 Website           : {artist.get_website()}")
+            print(f"📞 Contact Info      : {artist.get_contact_info()}")
+
         except pymysql.Error as e:
-            print(f"Error Adding Artist: {e}")
+            print(f"❌ Error Adding Artist: {e}")
+
             
     def add_users(self, Username, Password, Email, FirstName, LastName, DateOfBirth,ProfilePicture):
         try:
@@ -446,6 +473,11 @@ class VirtualArtGalleryDAO(Interface):
             if not self.cursor.fetchone():
                 raise GalleryNotFoundException(f"Gallery with ID {gallery.get_gallery_id()} not found.")
 
+            # Check if the curator (artist) exists
+            self.cursor.execute("SELECT 1 FROM artist WHERE ArtistID = %s", (gallery.get_curator(),))
+            if not self.cursor.fetchone():
+                raise ArtistNotFoundException(f"Curator with ID {gallery.get_curator()} not found.")
+
             # Perform the update
             query = """
                 UPDATE gallery
@@ -479,6 +511,8 @@ class VirtualArtGalleryDAO(Interface):
                 print("=" * 50)
 
         except GalleryNotFoundException as e:
+            print(f"🚫 {e}")
+        except ArtistNotFoundException as e:
             print(f"🚫 {e}")
         except pymysql.Error as e:
             print(f"❌ Database Error: {e}")

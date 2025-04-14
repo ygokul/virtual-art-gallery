@@ -2,6 +2,7 @@ from util.db_utils import DBConnection
 from dao.implementation import VirtualArtGalleryDAO
 from entity.artwork import Artwork
 from entity.gallery import Gallery
+from entity.artist import Artist
 from entity.userfavoriteartwork import UserFavoriteArtwork
 
 
@@ -28,7 +29,11 @@ def artwork_management_system(dao):
             description = input("Description: ")
             medium = input("Medium: ")
             image_url = input("Image URL: ")
-            dao.add_artwork(title, description, medium, image_url)
+
+            # Initially artwork_id and creation_date can be None
+            artwork = Artwork(None, title, description, None, medium, image_url)
+            dao.add_artwork(artwork)
+
         elif choice == '4':
             keyword = input("Enter keyword to search in artwork titles: ")
             dao.search_artworks(keyword)
@@ -46,7 +51,13 @@ def artwork_management_system(dao):
         elif choice == '6':
             dao.view_users2()
             user_id = int(input("Enter User ID to view favorite artworks: "))
-            dao.get_user_favorite_artworks(user_id)
+            
+            # Create an instance of UserFavoriteArtwork
+            user_fav_artwork = UserFavoriteArtwork(user_id=user_id)
+            
+            # Pass the object to the DAO method
+            dao.get_user_favorite_artworks(user_fav_artwork)
+
         elif choice == '7':
             dao.view_artworks2()
             artwork_id = int(input("Enter Artwork ID to view: "))
@@ -178,10 +189,14 @@ def mainlogin():
                 nationality = input("Nationality: ")
                 website = input("Website: ")
                 contact_info = input("Contact Information: ")
-            
+
+                # Create an Artist object with the provided details
+                artist = Artist(None, name, biography, birth_date, nationality, website, contact_info)
+
                 # Call the DAO method to add the artist
-                dao.add_artist(name, biography, birth_date, nationality, website, contact_info)
+                dao.add_artist(artist)
                 print("Artist account created successfully!")
+
             else:
                 print("Creating account for user")
                 Username = input("Name: ")
