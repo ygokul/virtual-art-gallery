@@ -20,6 +20,8 @@ class VirtualArtGalleryDAO(Interface):
     def __init__(self, conn):
         self.conn = conn
         self.cursor = conn.cursor()
+
+
     def view_artworks(self):
         try:
             self.cursor.execute("SELECT * FROM artwork")
@@ -38,6 +40,8 @@ class VirtualArtGalleryDAO(Interface):
                 print("-" * 30)  # Separator for better readability
         except pymysql.Error as e:
             print(f"Database Error: {e}")
+
+
     def view_artworks2(self):
         try:
             self.cursor.execute("SELECT * FROM artwork")
@@ -52,6 +56,7 @@ class VirtualArtGalleryDAO(Interface):
                 print("-" * 30)  # Separator for better readability
         except pymysql.Error as e:
             print(f"Database Error: {e}")
+
     
     def view_artists(self):
         try:
@@ -72,6 +77,7 @@ class VirtualArtGalleryDAO(Interface):
                 print("-" * 30)  # Separator for better readability
         except pymysql.Error as e:
             print(f"Database Error: {e}")
+
     def view_artists2(self):
         try:
             self.cursor.execute("SELECT * FROM artist")
@@ -86,6 +92,7 @@ class VirtualArtGalleryDAO(Interface):
                 print("-" * 30)  # Separator for better readability
         except pymysql.Error as e:
             print(f"Database Error: {e}")
+            
     def view_users2(self):
         try:
             self.cursor.execute("SELECT * FROM users")
@@ -100,6 +107,30 @@ class VirtualArtGalleryDAO(Interface):
                 print("-" * 30)  # Separator for better readability
         except pymysql.Error as e:
             print(f"Database Error: {e}")
+
+
+    def view_users(self):
+        try:
+            self.cursor.execute("SELECT * FROM users")
+            rows = self.cursor.fetchall()
+            if not rows:
+                raise ArtistNotFoundException("No artists found.")
+            print()
+            print("\nUsers:")
+            for row in rows:
+                print(f"User ID         : {row[0]}")
+                print(f"Username        : {row[1]}")
+                print(f"Password        : {row[2]}")
+                print(f"Email           : {row[3]}")
+                print(f"First Name      : {row[4]}")
+                print(f"Last Name       : {row[5]}")
+                print(f"Date of Birth   : {row[6]}")
+                print(f"Profile Picture : {row[7]}")
+                print(f"Favorite Artwork: {row[8]}")
+                print("-" * 40)  # Separator for better readability
+        except pymysql.Error as e:
+            print(f"Database Error: {e}")
+
 
 
     def add_artwork(self, artwork: Artwork):
@@ -888,3 +919,5 @@ class VirtualArtGalleryDAO(Interface):
         except Exception as e:
             print(f"Error fetching curator: {e}")
             return None
+        
+    

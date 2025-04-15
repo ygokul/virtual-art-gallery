@@ -251,8 +251,67 @@ def user_logged_in(user,dao):
         else:
             print("Invalid choice.")
 
-def admin_logged_in(admin,dao):
-    print('executable codes here')
+def admin_logged_in(dao):
+    while True:
+        print("1. View Galleries")
+        print("2. Create Gallery")
+        print("3. Update Gallery")
+        print("4. Remove Gallery")
+        print("5. View Artworks")
+        print("6. View Artists")
+        print("7. View Users")
+        print("8. Logout")
+
+        choice = input("Enter Your Choice: ")
+        if choice == '1':
+            dao.view_all_galleries()
+
+        elif choice == '2':
+            print("                 Create Gallery                   ")
+            name = input("Enter Gallery Name: ")
+            description = input("Enter Description: ")
+            location = input("Enter Location: ")
+            print("Available Artists:")
+            dao.view_artists2()
+            curator = input("Enter Curator ID (leave blank if none): ")
+            opening_hours = input("Enter Opening Hours: ")
+            curator = int(curator) if curator.strip() else None
+            gallery = Gallery(None, name, description, location, curator, opening_hours)
+            dao.add_gallery(gallery)
+
+        elif choice == '3':
+            print("                 Update Gallery                   ")
+            dao.view_all_galleries2()
+            gallery_id = int(input("Enter Gallery ID to update: "))
+            name = input("Enter New Name: ")
+            description = input("Enter New Description: ")
+            location = input("Enter New Location: ")
+            dao.view_artists2()
+            curator = input("Enter New Curator ID: ")
+            opening_hours = input("Enter New Opening Hours: ")
+            updated_gallery = Gallery(gallery_id, name, description, location, curator, opening_hours)
+            dao.update_gallery(updated_gallery)
+
+        elif choice == '4':
+            print("                 remove Gallery                   ")
+            gallery_id = input("Enter Gallery ID to remove: ")
+            dao.remove_gallery(gallery_id)
+
+        elif choice == '5':
+            dao.view_artworks()
+
+        elif choice == '6':
+            dao.view_artists()
+
+        elif choice == '7':
+            dao.view_users()
+
+        elif choice == '8':
+            break
+
+        else:
+            print("Invalid option,enter valid one")
+
     
 def mainlogin():
     conn = DBConnection.connect()
@@ -262,12 +321,12 @@ def mainlogin():
             print("\n=================================================")
             print("---------------Virtual Art Gallery---------------")
             print("\n=================================================")
-            print("welcome to  users dashboard")
             print("1. user login")
             print("2. admin login")
             print("3. exit")
             choice=input("enter ur choice: ")
             if choice == '1':
+                print("  Welcome to User's dashboard ")
                 try:
                     user_id = int(input("Enter UserID: "))
                 except ValueError:
@@ -306,8 +365,22 @@ def mainlogin():
                         if user:
                             user_logged_in(user,dao)
 
-            # elif choice == '2':
-            #     implement admin_logged_in function here
+            elif choice == '2':
+                print("  Welcome to admin's dashboard ")
+                while True:
+                    password = pwinput.pwinput(prompt="Enter password: ", mask="*")
+                    if password == 'admin@123':
+                        admin_logged_in(dao)
+                        break  # Successful login
+                    else:
+                        print("Invalid Password.")
+                        retry = input("Do you want to try again? (yes/no): ").strip().lower()
+                        if retry != 'yes':
+                            print("Exiting admin login.")
+                            break
+
+
+
             elif choice == '3':
                 break
 
