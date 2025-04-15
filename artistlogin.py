@@ -218,35 +218,85 @@ def mainlogin():
         print("\n=================================================")
         print("---------------Virtual Art Gallery---------------")
         print("1. Login as artist")
-        try:
-            artist_id = int(input("Enter Artist ID: "))
-        except ValueError:
-            print("Invalid Artist ID. Please enter a correct number.")
-            continue
-
-        artist = dao.get_artist_by_id(artist_id)
-
-        if artist:
-            print("artist exists.")
-            print(f"Welcome back, {artist.get_name()}!")
-            
-            
-        else:
-            print("artist not found.")
-            create = input("Would you like to create a new account? (yes/no): ").strip().lower()
-            if create == 'yes':
-                name = input("Name: ")
-                biography = input("Biography: ")
-                birth_date = input("Birth Date (YYYY-MM-DD): ")
-                nationality = input("Nationality: ")
-                website = input("Website: ")
-                contact_info = input("Contact Information: ")
-                artist = Artist(None, name, biography, birth_date, nationality, website, contact_info)
-                dao.add_artist(artist)
-                print("Artist account created successfully!")
+        print("2. Login as admin")
+        print("3. Login as user")
+        print("4. Exit")
+        print("=================================================")
+        print()
+        print("Please select an option: ")
+        choice = input("Enter your choice: ")
+        print()
+        if choice == '1':
+            try:
+                artist_id = int(input("Enter Artist ID: "))
+            except ValueError:
+                print("Invalid Artist ID. Please enter a correct number.")
                 continue
 
+            artist = dao.get_artist_by_id(artist_id)
+
+            if artist:
+                print("artist exists.")
+                print(f"Welcome back, {artist.get_name()}!")
                 
+                
+            else:
+                print("artist not found.")
+                create = input("Would you like to create a new account? (yes/no): ").strip().lower()
+                if create == 'yes':
+                    name = input("Name: ")
+                    biography = input("Biography: ")
+                    birth_date = input("Birth Date (YYYY-MM-DD): ")
+                    nationality = input("Nationality: ")
+                    website = input("Website: ")
+                    contact_info = input("Contact Information: ")
+                    artist = Artist(None, name, biography, birth_date, nationality, website, contact_info)
+                    dao.add_artist(artist)
+                    print("Artist account created successfully!")
+                    continue
+        elif choice == '2':
+            print('Admin login')
+            password = input("Enter Admin Password: ")
+            if password == 'admin123':
+                print("Welcome back, Admin!")
+            else:
+                print("Invalid Admin Password.")
+                continue
+        elif choice == '3':
+            print("welcome to  users dashboard")
+            try:
+                user_id = int(input("Enter UserID: "))
+            except ValueError:
+                print("Invalid UserID. Please enter a number.")
+                continue
+
+            user = dao.get_user_by_id(user_id)
+
+            if user:
+                print("User exists.")
+                password = input("Enter your password: ")
+
+                if password == user.get_password():
+                    print(f"Welcome back, {user.get_first_name()}!")
+                else:
+                    print("Incorrect password.")
+            else:
+                print("User not found.")
+                create = input("Would you like to create a new account? (yes/no): ").strip().lower()
+                if create == 'yes':
+                    print("\nCreating account for user")
+                    Username = input("Username: ")
+                    Password = input("Enter password: ")
+                    Email = input("Enter your email: ")
+                    FirstName = input("Firstname: ")
+                    LastName = input("Lastname: ")
+                    DateOfBirth = input("Birth Date (YYYY-MM-DD): ")
+                    ProfilePicture = input("Link for profile picture: ")
+
+                    dao.add_users(Username, Password, Email, FirstName, LastName, DateOfBirth, ProfilePicture)
+                    print("User account created successfully!")
+
+                    
 
         conn.close()
 
