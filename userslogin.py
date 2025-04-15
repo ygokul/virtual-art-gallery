@@ -209,51 +209,98 @@ def gallery_management_system_admin(dao):
             print("Invalid choice, please try again.")
 
 
+def user_logged_in(user,dao):
+    print(f"Welcome, {user.get_first_name()}! You're now logged in.")
+
+    while True:
+        print("\n1. View all artworks")
+        print("4. Add artwork to favorites")
+        print("5. View your favorite artworks")
+        print("6. Remove artwork from favorites")
+        print("0. Logout")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            dao.view_artworks()
+        elif choice == '4':
+            dao.view_artworks2()
+            artwork_id = int(input("Enter Artwork ID: "))
+            favorite = UserFavoriteArtwork()
+            favorite.set_user_id(user.get_user_id())
+            favorite.set_artwork_id(artwork_id)
+            dao.add_artwork_to_favorite(favorite)
+        elif choice == '5':
+            fav = UserFavoriteArtwork(user_id=user.get_user_id())
+            dao.get_user_favorite_artworks(fav)
+        elif choice == '6':
+            artwork_id = int(input("Enter Artwork ID to remove: "))
+            favorite = UserFavoriteArtwork()
+            favorite.set_user_id(user.get_user_id())
+            favorite.set_artwork_id(artwork_id)
+            dao.remove_artwork_from_favorite(favorite)
+        elif choice == '0':
+            print("Logged out.")
+            break
+        else:
+            print("Invalid choice.")
+
+
+
 def mainlogin():
     conn = DBConnection.connect()
     dao = VirtualArtGalleryDAO(conn)
+    try:
+        while True:
+            print("\n=================================================")
+            print("---------------Virtual Art Gallery---------------")
+            print("\n=================================================")
+            print("welcome to  users dashboard")
+            try:
+                user_id = int(input("Enter UserID: "))
+            except ValueError:
+                print("Invalid UserID. Please enter a number.")
+                continue
 
-    while True:
-        print("\n=================================================")
-        print("---------------Virtual Art Gallery---------------")
-        print("\n=================================================")
-        print("welcome to  users dashboard")
-        try:
-            user_id = int(input("Enter UserID: "))
-        except ValueError:
-            print("Invalid UserID. Please enter a number.")
-            continue
+            user = dao.get_user_by_id(user_id)
 
-        user = dao.get_user_by_id(user_id)
+            if user:
+                print("User exists.")
+                password = input("Enter your password: ")
 
-        if user:
-            print("User exists.")
-            password = input("Enter your password: ")
+                if password == user.get_password():
+                    user_logged_in(user,dao)
+                else:
+                    print("Incorrect password.")
 
-            if password == user.get_password():
-                print(f"Welcome back, {user.get_first_name()}!")
             else:
-                print("Incorrect password.")
-        else:
-            print("User not found.")
-            create = input("Would you like to create a new account? (yes/no): ").strip().lower()
-            if create == 'yes':
-                print("\nCreating account for user")
-                Username = input("Username: ")
-                Password = input("Enter password: ")
-                Email = input("Enter your email: ")
-                FirstName = input("Firstname: ")
-                LastName = input("Lastname: ")
-                DateOfBirth = input("Birth Date (YYYY-MM-DD): ")
-                ProfilePicture = input("Link for profile picture: ")
+                print("User not found.")
+                create = input("Would you like to create a new account? (yes/no): ").strip().lower()
+                if create == 'yes':
+                    print("\nCreating account for user")
+                    Username = input("Username: ")
+                    Password = input("Enter password: ")
+                    Email = input("Enter your email: ")
+                    FirstName = input("Firstname: ")
+                    LastName = input("Lastname: ")
+                    DateOfBirth = input("Birth Date (YYYY-MM-DD): ")
+                    ProfilePicture = input("Link for profile picture: ")
 
-                dao.add_users(Username, Password, Email, FirstName, LastName, DateOfBirth, ProfilePicture)
-                print("User account created successfully!")
+                    dao.add_users(Username, Password, Email, FirstName, LastName, DateOfBirth, ProfilePicture)
+                    print("User account created successfully!")
+
+                    # Get the newly created user and log them in
+                    user = dao.get_user_by_username(Username)
+                    if user:
+                        user_logged_in(user,dao)
+    
+    finally:
+        conn.close()
+
 
        
 
     # Make sure to close connection outside the loop
-        conn.close()
+
 
 if __name__ == "__main__":
     mainlogin()

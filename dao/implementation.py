@@ -442,6 +442,15 @@ class VirtualArtGalleryDAO(Interface):
                 result[8] if len(result) > 8 else None  # FavoriteArtwork (optional)
             )
         return None
+    
+    def get_user_by_username(self, username):
+        query = "SELECT * FROM users WHERE Username = %s"
+        self.cursor.execute(query, (username,))
+        row = self.cursor.fetchone()
+        if row:
+            return User(*row)  # Adjust depending on your User class constructor
+        return None
+
    
     def get_artist_by_id(self, artist_id):
         self.cursor.execute("SELECT * FROM artist WHERE ArtistID = %s", (artist_id,))
