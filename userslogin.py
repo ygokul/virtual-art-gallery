@@ -218,7 +218,13 @@ def user_logged_in(user,dao):
         print("2. Add artwork to favorites")
         print("3. View your favorite artworks")
         print("4. Remove artwork from favorites")
-        print("5. Logout")
+        print("5. Top Exhibited Artworks")
+
+        # view artworks
+        # search artwork by keyword or id
+        # search gallery by keyword or id
+
+        print("6. Logout")
         choice = input("Enter your choice: ")
 
         if choice == '1':
@@ -245,8 +251,9 @@ def user_logged_in(user,dao):
         else:
             print("Invalid choice.")
 
-
-
+def admin_logged_in(admin,dao):
+    print('executable codes here')
+    
 def mainlogin():
     conn = DBConnection.connect()
     dao = VirtualArtGalleryDAO(conn)
@@ -257,7 +264,8 @@ def mainlogin():
             print("\n=================================================")
             print("welcome to  users dashboard")
             print("1. user login")
-            print("2. exit")
+            print("2. admin login")
+            print("3. exit")
             choice=input("enter ur choice: ")
             if choice == '1':
                 try:
@@ -298,7 +306,9 @@ def mainlogin():
                         if user:
                             user_logged_in(user,dao)
 
-            elif choice == '2':
+            # elif choice == '2':
+            #     implement admin_logged_in function here
+            elif choice == '3':
                 break
 
             else:
