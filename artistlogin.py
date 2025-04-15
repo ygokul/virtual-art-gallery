@@ -208,7 +208,8 @@ def gallery_management_system_admin(dao):
         else:
             print("Invalid choice, please try again.")
 
-
+def main_artist_menu(dao, user_id):
+    print("\n=================================================")
 def mainlogin():
     conn = DBConnection.connect()
     dao = VirtualArtGalleryDAO(conn)
@@ -216,82 +217,24 @@ def mainlogin():
     while True:
         print("\n=================================================")
         print("---------------Virtual Art Gallery---------------")
-        print("Welcome to the landing page")
-        print("1. Login")
-        print("2. Register")
-        print("3. Exit")
+        print("1. Login as artist")
+        try:
+            artist_id = int(input("Enter Artist ID: "))
+        except ValueError:
+            print("Invalid Artist ID. Please enter a correct number.")
+            continue
 
-        choice = input("Please choose an option: ")
+        artist = dao.get_artist_by_id(artist_id)
 
-        if choice == "1":
-            while True:
-                print("\n=================================================")
-                print("---------------Virtual Art Gallery---------------")
-                print("Moving to login page")
-                print("1. Login as artist")
-                print("2. Login as admin")
-                print("3. Back to main menu")
-                
-                user_type = input("Enter your choice: ")
-                
-                if user_type == "1":
-                    while True:
-                        print("\n=================================================")
-                        print("---------------Virtual Art Gallery---------------")
-                        print(":::::::::::::  Logged in as artist  :::::::::::::")
-                        print("Choose the system to work")
-                        print("1. Artwork Management System")
-                        print("2. Gallery Management System")
-                        print("3. Back to previous menu")
-                        
-                        system_choice = input("Enter your choice: ")
-                        
-                        if system_choice == "1":
-                            artwork_management_system(dao)
-                        elif system_choice == "2":
-                            gallery_management_system(dao)
-                        elif system_choice == "3":
-                            break
-                        else:
-                            print("Invalid choice, please try again.")
-                
-                elif user_type == "2":
-                    while True:
-                        print("\n=================================================")
-                        print("---------------Virtual Art Gallery---------------")
-                        print(":::::::::::::  Logged in as Admin  ::::::::::::::")
-                        print("Choose the system to work")
-                        print("1. Artwork Management System")
-                        print("2. Gallery Management System")
-                        print("3. Back to previous menu")
-                        
-                        system_choice = input("Enter your choice: ")
-                        
-                        if system_choice == "1":
-                            artwork_management_system_admin(dao)
-                        elif system_choice == "2":
-                            gallery_management_system_admin(dao)
-                        elif system_choice == "3":
-                            break
-                        else:
-                            print("Invalid choice, please try again.")
-                
-                elif user_type == "3":
-                    break
-                else:
-                    print("Invalid choice, please try again.")
-        
-        elif choice == "2":
-            print("\n=================================================")
-            print("Moving to register page")
-            print("1. Create Account for artist")
-            print("2. Create Account for user")
-            print("3. Back to main menu")
+        if artist:
+            print("artist exists.")
+            print(f"Welcome back, {artist.get_name()}!")
             
-            register_choice = input("Enter your choice: ")
             
-            if register_choice == "1":
-                print("\nCreating account for artist")
+        else:
+            print("artist not found.")
+            create = input("Would you like to create a new account? (yes/no): ").strip().lower()
+            if create == 'yes':
                 name = input("Name: ")
                 biography = input("Biography: ")
                 birth_date = input("Birth Date (YYYY-MM-DD): ")
@@ -301,32 +244,11 @@ def mainlogin():
                 artist = Artist(None, name, biography, birth_date, nationality, website, contact_info)
                 dao.add_artist(artist)
                 print("Artist account created successfully!")
-            
-            elif register_choice == "2":
-                print("\nCreating account for user")
-                Username = input("Name: ")
-                Password = input("Enter password: ")
-                Email = input("Enter your email: ")
-                FirstName = input("Firstname: ")
-                LastName = input("Lastname: ")
-                DateOfBirth = input("Birth Date (YYYY-MM-DD): ")
-                ProfilePicture = input("Link for profile picture: ")
-                dao.add_users(Username, Password, Email, FirstName, LastName, DateOfBirth, ProfilePicture)
-                print("User account created successfully!")
-            
-            elif register_choice == "3":
                 continue
-            else:
-                print("Invalid choice, returning to main menu.")
-        
-        elif choice == "3":
-            print("Exiting the Virtual Art Gallery. Goodbye!")
-            break
-        
-        else:
-            print("Invalid choice, please try again.")
 
-    conn.close()
+                
+
+        conn.close()
 
 
 if __name__ == "__main__":

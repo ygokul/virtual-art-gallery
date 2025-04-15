@@ -3,6 +3,7 @@ from dao.interface import Interface
 from tabulate import tabulate
 from datetime import datetime
 from entity.artwork import Artwork
+from entity.artist import Artist
 from entity.gallery import Gallery
 from entity.user import User
 from entity.userfavoriteartwork import UserFavoriteArtwork
@@ -439,6 +440,21 @@ class VirtualArtGalleryDAO(Interface):
                 result[6],  # DateOfBirth
                 result[7],  # ProfilePicture
                 result[8] if len(result) > 8 else None  # FavoriteArtwork (optional)
+            )
+        return None
+   
+    def get_artist_by_id(self, artist_id):
+        self.cursor.execute("SELECT * FROM artist WHERE ArtistID = %s", (artist_id,))
+        result = self.cursor.fetchone()
+        if result:
+            return Artist(
+                result[0],  # ArtistID
+                result[1],  # Name
+                result[2],  # Biography
+                result[3],  # BirthDate
+                result[4],  # Nationality
+                result[5],  # Website
+                result[6]   # ContactInformation
             )
         return None
 
