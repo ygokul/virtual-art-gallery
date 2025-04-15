@@ -841,3 +841,50 @@ class VirtualArtGalleryDAO(Interface):
             print(f"❌ Database error: {e}")
 
 
+    
+    def get_galleries_by_curator(self, artist_id: int):
+        try:
+            query = "SELECT GalleryID, Name, Description, Location, Curator, OpeningHours FROM gallery WHERE Curator = %s"
+            self.cursor.execute(query, (artist_id,))
+            rows = self.cursor.fetchall()
+
+            if not rows:
+                raise ArtistNotFoundException(f"No galleries found for Artist ID [{artist_id}].")
+
+            galleries = [Gallery(*row) for row in rows]
+
+            print(f"\n🖼 Galleries curated by Artist [{artist_id}]:")
+            for g in galleries:
+                print(f" - Gallery ID: {g.get_gallery_id()}, Name: {g.get_name()}")
+            print(f"\nTotal Galleries: {len(galleries)}")
+
+            return galleries
+
+        except ArtistNotFoundException as e:
+            print(e)
+            return []
+
+        except Exception as e:
+            print(f"Error fetching galleries: {e}")
+            return []
+
+    def get_curator_by_gallery(self, gallery_id: int):
+        try:
+            query = "SELECT Curator FROM gallery WHERE GalleryID = %s"
+            self.cursor.execute(query, (gallery_id,))
+            result = self.cursor.fetchone()
+
+            if not result:
+                raise GalleryNotFoundException(f"Gallery ID [{gallery_id}] not found.")
+
+            curator_id = result[0]
+            print(f"🎨 Gallery [{gallery_id}] is curated by Artist ID [{curator_id}].")
+            return curator_id
+
+        except GalleryNotFoundException as e:
+            print(e)
+            return None
+
+        except Exception as e:
+            print(f"Error fetching curator: {e}")
+            return None

@@ -127,7 +127,9 @@ def gallery_management_system(dao):
         print("5. View Artworks in a specific Gallery")
         print("6. View Galleries Displaying the Artwork")
         print("7. Top Exhibited Artworks")
-        print("8. Back to main menu")
+        print("8. get multiple galleries by artistid/curator ")
+        print("9. get artistid/curator associated with gallery")
+        print("10. Back to main menu")
 
         choice = input("Enter your choice: ")
 
@@ -155,6 +157,15 @@ def gallery_management_system(dao):
             top_n = int(input("Enter how many top artworks you want to view: "))
             dao.get_top_exhibited_artworks(top_n)
         elif choice == '8':
+            artist_id = int(input("Enter Artist ID to find all galleries: "))
+            dao.get_galleries_by_curator(artist_id)
+            print()
+        elif choice == '9':
+            gallery_id = int(input("Enter Gallery ID to find curator: "))
+            print()
+            dao.get_curator_by_gallery(gallery_id)
+           
+        elif choice == '10':
             break
         else:
             print("Invalid choice, please try again.")
