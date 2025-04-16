@@ -22,24 +22,33 @@ class VirtualArtGalleryDAO(Interface):
         self.cursor = conn.cursor()
 
 
-    def view_artworks(self):
+    def view_artworks(self, artist_id=None):
         try:
-            self.cursor.execute("SELECT * FROM artwork")
+            if artist_id is not None:
+                # Fetch only the artworks by the specified artist
+                self.cursor.execute("SELECT * FROM artwork WHERE artist_id = %s", (artist_id,))
+            else:
+                # Fetch all artworks (if no artist_id is provided)
+                self.cursor.execute("SELECT * FROM artwork")
+                
             rows = self.cursor.fetchall()
             if not rows:
                 raise ArtworkNotFoundException("No artworks found.")
-            print()
+            
             print("\nArtworks:")
             for row in rows:
                 print(f"Artwork ID: {row[0]}")
                 print(f"Title: {row[1]}")
                 print(f"Description: {row[2]}")
-                print(f"creation date: {row[3]}")
+                print(f"Creation Date: {row[3]}")
                 print(f"Medium: {row[4]}")
-                print(f"image Url: {row[5]}")
+                print(f"Image URL: {row[5]}")
                 print("-" * 30)  # Separator for better readability
+                
         except pymysql.Error as e:
             print(f"Database Error: {e}")
+        except ArtworkNotFoundException as e:
+            print(f"Error: {e}")
 
 
     def view_artworks2(self):
