@@ -208,7 +208,6 @@ def gallery_management_system_admin(dao):
         else:
             print("Invalid choice, please try again.")
 
-def main_artist_menu(dao, user_id):
     print("\n=================================================")
 def mainlogin():
     conn = DBConnection.connect()
@@ -238,16 +237,7 @@ def mainlogin():
             if artist:
                 print("artist exists.")
                 print(f"Welcome back, {artist.get_name()}!")
-                # view artworks
-                # search by keyword or id
-                # create artwork
-                # update artwork
-                # remove artwork
-                print("2. Search Gallery by Name")
-                print("3. View Gallery by ID")
-                print("4. Gallery Artist Impact Report")
-                print("5. View Artworks in a specific Gallery")
-                print("6. View Galleries Displaying the Artwork")
+
                 print("8. get multiple galleries by artistid/curator ")
                 print("9. get artistid/curator associated with gallery")
                 print("10. Back to main menu")
@@ -272,13 +262,13 @@ def mainlogin():
             password = input("Enter Admin Password: ")
             if password == 'admin123':
                 print("Welcome back, Admin!")
-                view all users 
-                view all artworks
-                view all artists
-                view all galleries
-                create gallery
-                update gallery
-                remove gallery
+                # view all users 
+                # view all artworks
+                # view all artists
+                # view all galleries
+                # create gallery
+                # update gallery
+                # remove gallery
             else:
                 print("Invalid Admin Password.")
                 continue
