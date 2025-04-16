@@ -17,12 +17,10 @@ def user_logged_in(user,dao):
         print("4. Remove artwork from favorites")
         print("5. Top Exhibited Artworks")
         print("6. Search Artworks by titles")
-        print("7. Search Artworks by id")
-        print("8. Search Galleries by id")
-        print("9. Search Galleries by title")
-        print("10.View Artworks in a specific Gallery")
-        print("11. View Galleries Displaying the Artwork")
-        print("12. logout")
+        print("7. Search Galleries by id")
+        print("8.View Artworks in a specific Gallery")
+        print("9. View Galleries Displaying the Artwork")
+        print("10. logout")
 
         choice = input("Enter your choice: ")
 
@@ -51,25 +49,18 @@ def user_logged_in(user,dao):
             keyword = input("Enter keyword to search in artwork titles: ")
             dao.search_artworks(keyword)
         elif choice == '7':
-            dao.view_artworks2()
-            artwork_id = int(input("Enter Artwork ID to view: "))
-            dao.get_artwork_by_id(artwork_id)
-        elif choice == '8':
             dao.view_all_galleries2()
             gallery_id = input("Enter Gallery ID to view details: ")
             dao.search_gallery_by_id(gallery_id)
-        elif choice == '9':
-            keyword = input("Enter gallery name keyword to search: ")
-            dao.search_gallery_by_name(keyword)
-        elif choice == '10':
+        elif choice == '8':
             dao.view_all_galleries2()
             gallery_id = int(input("Enter Gallery ID: "))
             dao.get_artworks_in_gallery(gallery_id)
-        elif choice == '11':
+        elif choice == '9':
             print("\n🏛 View Galleries Displaying an Artwork")
             artwork_id = int(input("Enter Artwork ID: "))
             dao.get_galleries_for_artwork(artwork_id)
-        elif choice == '12':
+        elif choice == '10':
             print("Logged out.")
             break
         else:
@@ -141,9 +132,11 @@ def artist_logged_in(artist, dao):
         print('3.create artwork')
         print('4.update artwork')
         print('5.remove artwork')
-        print('6. View galleries with your artwork')
+        print('6.View galleries with your artwork')
         print('7.gallery artist impact report')
-        print('8. Logout')
+        print("8.get multiple galleries by artistid/curator")
+        print("9.get artistid/curator associated with gallery")
+        print('10. Logout')
         choice = input('Enter your choice: ')
         if choice == '1':
             dao.view_artworks_artist()
@@ -186,6 +179,14 @@ def artist_logged_in(artist, dao):
         elif choice == '7':
             dao.gallery_artist_impact_report(artist_id.get_artist_id())
         elif choice == '8':
+            artist_id = int(input("Enter Artist ID to find all galleries: "))
+            dao.get_galleries_by_curator(artist_id)
+            print()
+        elif choice == '9':
+            gallery_id = int(input("Enter Gallery ID to find curator: "))
+            print()
+            dao.get_curator_by_gallery(gallery_id)
+        elif choice == '10':
             break
         else:
             print('Invalid option /n enter valid option')
