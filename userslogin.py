@@ -13,14 +13,15 @@ def user_logged_in(user,dao):
     while True:
         print("\n1. View all artworks")
         print("2. Add artwork to favorites")
-        print("3. View your favorite artworks")
-        print("4. Remove artwork from favorites")
-        print("5. Top Exhibited Artworks")
-        print("6. Search Artworks by titles")
-        print("7. Search Galleries by id")
-        print("8.View Artworks in a specific Gallery")
-        print("9. View Galleries Displaying the Artwork")
-        print("10. logout")
+        print("3. Checking- A user can have many favorite artworks")
+        print("4. Checking -an artwork can be a favorite of multiple users")
+        print("5. Remove artwork from favorites")
+        print("6. Top Exhibited Artworks")
+        print("7. Search Artworks by titles")
+        print("8. Search Galleries by id")
+        print("9.View Artworks in a specific Gallery")
+        print("10. View Galleries Displaying the Artwork")
+        print("11. logout")
 
         choice = input("Enter your choice: ")
 
@@ -37,30 +38,35 @@ def user_logged_in(user,dao):
             fav = UserFavoriteArtwork(user_id=user.get_user_id())
             dao.get_user_favorite_artworks(fav)
         elif choice == '4':
+            artwork_id = int(input("Enter Artwork ID: "))
+            fav = UserFavoriteArtwork(artwork_id=artwork_id)
+            dao.get_artwork_favorited_by_users(fav.get_artwork_id())  # Extract artwork_id
+
+        elif choice == '5':
             artwork_id = int(input("Enter Artwork ID to remove: "))
             favorite = UserFavoriteArtwork()
             favorite.set_user_id(user.get_user_id())
             favorite.set_artwork_id(artwork_id)
             dao.remove_artwork_from_favorite(favorite)
-        elif choice == '5':
+        elif choice == '6':
             top_n = int(input("Enter how many top artworks you want to view: "))
             dao.get_top_exhibited_artworks(top_n)
-        elif choice == '6':
+        elif choice == '7':
             keyword = input("Enter keyword to search in artwork titles: ")
             dao.search_artworks(keyword)
-        elif choice == '7':
+        elif choice == '8':
             dao.view_all_galleries2()
             gallery_id = input("Enter Gallery ID to view details: ")
             dao.search_gallery_by_id(gallery_id)
-        elif choice == '8':
+        elif choice == '9':
             dao.view_all_galleries2()
             gallery_id = int(input("Enter Gallery ID: "))
             dao.get_artworks_in_gallery(gallery_id)
-        elif choice == '9':
+        elif choice == '10':
             print("\n🏛 View Galleries Displaying an Artwork")
             artwork_id = int(input("Enter Artwork ID: "))
             dao.get_galleries_for_artwork(artwork_id)
-        elif choice == '10':
+        elif choice == '11':
             print("Logged out.")
             break
         else:
@@ -297,6 +303,8 @@ def mainlogin():
                             print(f"Welcome, {artist.get_name()}! You're now logged in.")
                             # Add artist-specific functionality here
                             artist_logged_in(artist, dao)
+            elif choice == '4':
+                break
             else:
                 print("enter valid option")
     finally:

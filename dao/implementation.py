@@ -413,6 +413,44 @@ class VirtualArtGalleryDAO(Interface):
         except pymysql.Error as e:
             print(f"❌ Error Fetching Favorites: {e}")
 
+    def get_artwork_favorited_by_users(self, artwork_id):
+        try:
+            # Step 1: Check if the artwork exists
+            check_artwork_query = "SELECT 1 FROM artwork WHERE ArtworkID = %s"
+            self.cursor.execute(check_artwork_query, (artwork_id,))
+            if not self.cursor.fetchone():
+                raise ArtworkNotFoundException(f"Artwork with ID {artwork_id} not found.")
+
+            # Step 2: Fetch users who favorited the artwork
+            query = """
+                SELECT u.UserID, u.Username, u.Email
+                FROM users u
+                JOIN user_favorite_artwork ufa ON u.UserID = ufa.UserID
+                WHERE ufa.ArtworkID = %s
+            """
+            self.cursor.execute(query, (artwork_id,))
+            rows = self.cursor.fetchall()
+
+            if not rows:
+                raise FavoriteNotFoundException("No users have favorited this artwork.")
+
+            print("\n👥 Users Who Favorited This Artwork:")
+            for row in rows:
+                print(f"🆔 User ID   : {row[0]}")
+                print(f"👤 Username  : {row[1]}")
+                print(f"📧 Email     : {row[2]}")
+                print("-" * 40)
+
+        except ArtworkNotFoundException as e:
+            print(f"🚫 {e}")
+
+        except FavoriteNotFoundException as e:
+            print(f"⚠️ {e}")
+
+        except pymysql.Error as e:
+            print(f"❌ Error Fetching Users Who Favorited Artwork: {e}")
+
+
 
     def add_artist(self, artist):
         try:
