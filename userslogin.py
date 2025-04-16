@@ -16,12 +16,14 @@ def user_logged_in(user,dao):
         print("3. View your favorite artworks")
         print("4. Remove artwork from favorites")
         print("5. Top Exhibited Artworks")
+        print("6. Search Artworks by titles")
+        print("7. Search Artworks by id")
+        print("8. Search Galleries by id")
+        print("9. Search Galleries by title")
+        print("10.View Artworks in a specific Gallery")
+        print("11. View Galleries Displaying the Artwork")
+        print("12. logout")
 
-        # view artworks
-        # search artwork by keyword or id
-        # search gallery by keyword or id
-
-        print("6. Logout")
         choice = input("Enter your choice: ")
 
         if choice == '1':
@@ -43,6 +45,31 @@ def user_logged_in(user,dao):
             favorite.set_artwork_id(artwork_id)
             dao.remove_artwork_from_favorite(favorite)
         elif choice == '5':
+            top_n = int(input("Enter how many top artworks you want to view: "))
+            dao.get_top_exhibited_artworks(top_n)
+        elif choice == '6':
+            keyword = input("Enter keyword to search in artwork titles: ")
+            dao.search_artworks(keyword)
+        elif choice == '7':
+            dao.view_artworks2()
+            artwork_id = int(input("Enter Artwork ID to view: "))
+            dao.get_artwork_by_id(artwork_id)
+        elif choice == '8':
+            dao.view_all_galleries2()
+            gallery_id = input("Enter Gallery ID to view details: ")
+            dao.search_gallery_by_id(gallery_id)
+        elif choice == '9':
+            keyword = input("Enter gallery name keyword to search: ")
+            dao.search_gallery_by_name(keyword)
+        elif choice == '10':
+            dao.view_all_galleries2()
+            gallery_id = int(input("Enter Gallery ID: "))
+            dao.get_artworks_in_gallery(gallery_id)
+        elif choice == '11':
+            print("\n🏛 View Galleries Displaying an Artwork")
+            artwork_id = int(input("Enter Artwork ID: "))
+            dao.get_galleries_for_artwork(artwork_id)
+        elif choice == '12':
             print("Logged out.")
             break
         else:
