@@ -26,7 +26,7 @@ class VirtualArtGalleryDAO(Interface):
         try:
             if artist_id is not None:
                 # Fetch only the artworks by the specified artist
-                self.cursor.execute("SELECT * FROM artwork WHERE artist_id = %s", (artist_id,))
+                self.cursor.execute("SELECT * FROM artwork WHERE artistid = %s", (artist_id,))
             else:
                 # Fetch all artworks (if no artist_id is provided)
                 self.cursor.execute("SELECT * FROM artwork")
@@ -35,7 +35,7 @@ class VirtualArtGalleryDAO(Interface):
             if not rows:
                 raise ArtworkNotFoundException("No artworks found.")
             
-            print("\nArtworks:")
+            print("\n  Artworks:")
             for row in rows:
                 print(f"Artwork ID: {row[0]}")
                 print(f"Title: {row[1]}")
@@ -142,25 +142,27 @@ class VirtualArtGalleryDAO(Interface):
 
 
 
-    def add_artwork(self, artwork: Artwork):
+    def add_artwork(self, artwork: Artwork, artist_id: int):
+
         try:
             creation_date = datetime.now().strftime('%Y-%m-%d')
             artwork.set_creation_date(creation_date)
 
             query = """
-                INSERT INTO artwork (Title, Description, CreationDate, Medium, ImageURL)
-                VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO artwork (Title, Description, CreationDate, Medium, ImageURL,ArtistId)
+                VALUES (%s, %s, %s, %s, %s, %s)
             """
             self.cursor.execute(query, (
                 artwork.get_title(),
                 artwork.get_description(),
                 artwork.get_creation_date(),
                 artwork.get_medium(),
-                artwork.get_image_url()
+                artwork.get_image_url(),
+                artist_id
             ))
             self.conn.commit()
 
-            print("\n✅ Artwork added successfully!")
+            print(f"\n✅ Artwork added successfully! by {artist_id}")
 
             self.cursor.execute("SELECT * FROM artwork WHERE ArtworkID = LAST_INSERT_ID()")
             inserted_artwork = self.cursor.fetchone()
@@ -187,14 +189,15 @@ class VirtualArtGalleryDAO(Interface):
             print(f"❌ Error Adding Artwork: {e}")
 
 
-    def update_artwork(self, artwork):
+    def update_artwork(self, artwork, artist_id):
         try:
             creation_date = datetime.now().strftime('%Y-%m-%d')
-
+            
+            # Update only if the artwork belongs to the artist
             query = """
                 UPDATE artwork 
-                SET Title=%s, Description=%s, CreationDate=%s, Medium=%s, ImageURL=%s 
-                WHERE ArtworkID=%s
+                SET Title = %s, Description = %s, CreationDate = %s, Medium = %s, ImageURL = %s 
+                WHERE ArtworkID = %s AND ArtistId = %s
             """
             self.cursor.execute(query, (
                 artwork.get_title(),
@@ -202,21 +205,27 @@ class VirtualArtGalleryDAO(Interface):
                 creation_date,
                 artwork.get_medium(),
                 artwork.get_image_url(),
-                artwork.get_artwork_id()
+                artwork.get_artwork_id(),
+                artist_id
             ))
             self.conn.commit()
 
             if self.cursor.rowcount == 0:
-                raise ArtworkNotFoundException(f"🎨 Artwork with ID {artwork.get_artwork_id()} not found for update.")
+                raise ArtworkNotFoundException(
+                    f"🎨 Artwork with ID {artwork.get_artwork_id()} not found or doesn't belong to artist ID {artist_id}."
+                )
 
             print("\n✅ Artwork updated successfully!")
 
             # Display updated artwork
-            self.cursor.execute("SELECT * FROM artwork WHERE ArtworkID = %s", (artwork.get_artwork_id(),))
+            self.cursor.execute(
+                "SELECT * FROM artwork WHERE ArtworkID = %s AND ArtistId = %s",
+                (artwork.get_artwork_id(), artist_id)
+            )
             updated_artwork = self.cursor.fetchone()
 
             if updated_artwork:
-                artwork_id, title, description, creation_date, medium, image_url = updated_artwork
+                artwork_id, title, description, creation_date, medium, image_url, artist_id = updated_artwork
                 print("\n--- 🎨 Updated Artwork ---")
                 print(f"🆔 Artwork ID    : {artwork_id}")
                 print(f"🖌️  Title         : {title}")
@@ -224,6 +233,7 @@ class VirtualArtGalleryDAO(Interface):
                 print(f"📅 Creation Date : {creation_date}")
                 print(f"🎨 Medium        : {medium}")
                 print(f"🌐 Image URL     : {image_url}")
+                print(f"👨‍🎨 Artist ID    : {artist_id}")
                 print("-" * 40)
 
         except ArtworkNotFoundException as e:
@@ -232,19 +242,26 @@ class VirtualArtGalleryDAO(Interface):
         except pymysql.Error as e:
             print(f"❌ Error Updating Artwork: {e}")
 
-    def remove_artwork(self, identifier):
+
+    def remove_artwork(self, artwork_id, artist_id):
         try:
-            query = "DELETE FROM artwork WHERE ArtworkID = %s OR Title = %s"
-            self.cursor.execute(query, (identifier, str(identifier)))
+            # Step 1: Verify artist exists
+            self.cursor.execute("SELECT 1 FROM artist WHERE ArtistId = %s", (artist_id,))
+            if not self.cursor.fetchone():
+                raise ArtistNotFoundException(f"Artist with ID {artist_id} not found.")
+
+            # Step 2: Delete artwork only if it belongs to the artist
+            query = "DELETE FROM artwork WHERE ArtworkID = %s AND ArtistId = %s"
+            self.cursor.execute(query, (artwork_id, artist_id))
             self.conn.commit()
 
             if self.cursor.rowcount == 0:
-                raise ArtworkNotFoundException(f"🎨 Artwork with ID or Title '{identifier}' not found.")
+                raise ArtworkNotFoundException("Artwork not found or you are not authorized to delete it.")
 
-            print()
-            print("✅ Artwork removed successfully!")
-            print("🚀 We're always evolving! Feel free to add your next masterpiece anytime.")
-            print("🎭 Visit us again for more artistic inspiration!")
+            print("\n✅ Your artwork was removed successfully!")
+
+        except ArtistNotFoundException as e:
+            print(f"❌ {e}")
 
         except ArtworkNotFoundException as e:
             print(f"❌ {e}")
@@ -797,28 +814,33 @@ class VirtualArtGalleryDAO(Interface):
             print(f"❌ Database Error while removing gallery: {e}")
     
 
-    def gallery_artist_impact_report(self):
+    def gallery_artist_impact_report(self, artist_id):
         try:
             query = """
                 SELECT ar.ArtistID, ar.Name, COUNT(g.GalleryID) AS TotalGalleriesCurated
                 FROM artist ar
                 LEFT JOIN gallery g ON ar.ArtistID = g.Curator
+                WHERE ar.ArtistID = %s
                 GROUP BY ar.ArtistID, ar.Name
-                ORDER BY TotalGalleriesCurated DESC
             """
-            self.cursor.execute(query)
-            rows = self.cursor.fetchall()
+            self.cursor.execute(query, (artist_id,))
+            row = self.cursor.fetchone()
 
             print("\n🎨 Gallery Artist Impact Report 🎨")
             print("-" * 40)
-            for row in rows:
+
+            if row:
                 print(f"Artist ID   : {row[0]}")
                 print(f"Name        : {row[1]}")
                 print(f"Galleries   : {row[2]}")
-                print("-" * 40)
+            else:
+                print("No data found for the logged-in artist.")
+
+            print("-" * 40)
 
         except pymysql.Error as e:
             print(f"❌ Error generating report: {e}")
+
 
   
   

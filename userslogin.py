@@ -19,8 +19,8 @@ def user_logged_in(user,dao):
         print("6. Top Exhibited Artworks")
         print("7. Search Artworks by titles")
         print("8. Search Galleries by id")
-        print("9.View Artworks in a specific Gallery")
-        print("10. View Galleries Displaying the Artwork")
+        print("9. An artwork can be displayed in multiple galleries")
+        print("10. A gallery can have multiple artworks.")
         print("11. logout")
 
         choice = input("Enter your choice: ")
@@ -58,11 +58,11 @@ def user_logged_in(user,dao):
             dao.view_all_galleries2()
             gallery_id = input("Enter Gallery ID to view details: ")
             dao.search_gallery_by_id(gallery_id)
-        elif choice == '9':
+        elif choice == '10':
             dao.view_all_galleries2()
             gallery_id = int(input("Enter Gallery ID: "))
             dao.get_artworks_in_gallery(gallery_id)
-        elif choice == '10':
+        elif choice == '9':
             print("\n🏛 View Galleries Displaying an Artwork")
             artwork_id = int(input("Enter Artwork ID: "))
             dao.get_galleries_for_artwork(artwork_id)
@@ -133,66 +133,63 @@ def admin_logged_in(dao):
             print("Invalid option,enter valid one")
 def artist_logged_in(artist, dao):
     while True:
-        print('1. View Artworks')
-        print('2.search your artwork by keyword')
+        print('1.View Artworks -- Checking(Many-one)')
+        print('2.search artwork by keyword')
         print('3.create artwork')
         print('4.update artwork')
         print('5.remove artwork')
-        print('6.View galleries with your artwork')
-        print('7.gallery artist impact report')
-        print("8.get multiple galleries by artistid/curator")
-        print("9.get artistid/curator associated with gallery")
-        print('10. Logout')
+        print('6.gallery artist impact report')
+        print("7.An artist can be associated with multiple galleries")
+        print("8.A gallery can have only one curator (artist)")
+        print('9. Logout')
         choice = input('Enter your choice: ')
         if choice == '1':
-            dao.view_artworks_artist()
+            dao.view_artworks(artist.get_artist_id())
         elif choice == '2':
-            keyword = input("Enter keyword to search: ")
-            dao.search_artwork_by_keyword(keyword)
+            keyword = input("Enter keyword to search in artwork titles: ")
+            dao.search_artworks(keyword)
         elif choice == '3':
             print("                 Create Artwork                   ")
-            title = input("Enter Artwork Title: ")
-            description = input("Enter Description: ")
-            medium = input("Enter Medium: ")
-            year_created = input("Enter Year Created: ")
-            dimensions = input("Enter Dimensions: ")
-            price = float(input("Enter Price: "))
+            title = input("Title: ")
+            description = input("Description: ")
+            medium = input("Medium: ")
+            image_url = input("Image URL: ")
             artist_id = artist.get_artist_id()
-            artwork = Artwork(None, title, description, medium, year_created, dimensions, price, artist_id)
-            dao.add_artwork(artwork)
+            artwork = Artwork(None, title, description, None, medium, image_url)
+            dao.add_artwork(artwork,artist_id)
         elif choice == '4':
             print("                 Update Artwork                   ")
-            dao.view_artworks_artist()
-            print("Select the artwork you want to update:")
-            artwork_id = int(input("Enter Artwork ID to update: "))
-            title = input("Enter New Title: ")
-            description = input("Enter New Description: ")
-            medium = input("Enter New Medium: ")
-            year_created = input("Enter New Year Created: ")
-            dimensions = input("Enter New Dimensions: ")
-            price = float(input("Enter New Price: "))
+            dao.view_artworks(artist.get_artist_id())
             artist_id = artist.get_artist_id()
-            updated_artwork = Artwork(artwork_id, title, description, medium, year_created, dimensions, price, artist_id)
-            dao.update_artwork(updated_artwork)
+
+            artwork_id = int(input("Enter Artwork ID to update: "))
+            title = input("New Title: ")
+            description = input("New Description: ")
+            medium = input("New Medium: ")
+            image_url = input("New Image URL: ")
+
+            artwork = Artwork(artwork_id, title, description, None, medium, image_url)
+            dao.update_artwork(artwork, artist_id)
         elif choice == '5':
             print("                 Remove Artwork                   ")
-            dao.view_artworks_artist()
-            print("Select the artwork you want to remove:")
-            artwork_id = int(input("Enter Artwork ID to remove: "))
-            dao.remove_artwork(artwork_id)
+            dao.view_artworks(artist.get_artist_id())
+            artwork_id = int(input("Enter the Artwork ID to remove: "))
+            artist_id = artist.get_artist_id()
+            dao.remove_artwork(artwork_id, artist_id)
+
         elif choice == '6':
-            dao.view_galleries_with_your_artwork(artist.get_artist_id())
+            artist_id = artist.get_artist_id()
+            dao.gallery_artist_impact_report(artist_id)
+
         elif choice == '7':
-            dao.gallery_artist_impact_report(artist_id.get_artist_id())
-        elif choice == '8':
             artist_id = int(input("Enter Artist ID to find all galleries: "))
             dao.get_galleries_by_curator(artist_id)
             print()
-        elif choice == '9':
+        elif choice == '8':
             gallery_id = int(input("Enter Gallery ID to find curator: "))
             print()
             dao.get_curator_by_gallery(gallery_id)
-        elif choice == '10':
+        elif choice == '9':
             break
         else:
             print('Invalid option /n enter valid option')

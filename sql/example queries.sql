@@ -182,3 +182,7 @@ alter table artwork drop constraint ar_foreign;
 alter table artwork drop column artistid;
 
 
+
+
+
+
