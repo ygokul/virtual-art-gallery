@@ -53,9 +53,8 @@ UPDATE artwork SET ArtistId = 114 WHERE ArtworkID = 39;
 UPDATE artwork SET ArtistId = 115 WHERE ArtworkID = 40;
 UPDATE artwork SET ArtistId = 113 WHERE ArtworkID = 41;
 UPDATE artwork SET ArtistId = 114 WHERE ArtworkID = 42;
-
 UPDATE artwork SET ArtistID = 102 WHERE ArtworkID = 5;
 UPDATE artwork SET ArtistID = 101 WHERE ArtworkID = 7;
 
-update user_favorite_artwork set artworkid=3 where artworkid=30
+update user_favorite_artwork set artworkid=3 where artworkid=30;
 
