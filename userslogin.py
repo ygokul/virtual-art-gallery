@@ -119,7 +119,7 @@ def artist_logged_in(artist, dao):
         print('8. Logout')
         choice = input('Enter your choice: ')
         if choice == '1':
-            dao.view_artworks()
+            dao.view_artworks_artist()
         elif choice == '2':
             keyword = input("Enter keyword to search: ")
             dao.search_artwork_by_keyword(keyword)
@@ -136,6 +136,8 @@ def artist_logged_in(artist, dao):
             dao.add_artwork(artwork)
         elif choice == '4':
             print("                 Update Artwork                   ")
+            dao.view_artworks_artist()
+            print("Select the artwork you want to update:")
             artwork_id = int(input("Enter Artwork ID to update: "))
             title = input("Enter New Title: ")
             description = input("Enter New Description: ")
@@ -148,13 +150,14 @@ def artist_logged_in(artist, dao):
             dao.update_artwork(updated_artwork)
         elif choice == '5':
             print("                 Remove Artwork                   ")
+            dao.view_artworks_artist()
+            print("Select the artwork you want to remove:")
             artwork_id = int(input("Enter Artwork ID to remove: "))
             dao.remove_artwork(artwork_id)
         elif choice == '6':
             dao.view_galleries_with_your_artwork(artist.get_artist_id())
         elif choice == '7':
-            gallery_id = int(input('enter gallery id for report'))
-            dao.gallery_artist_impact_report(gallery_id)
+            dao.gallery_artist_impact_report(artist_id.get_artist_id())
         elif choice == '8':
             break
         else:
